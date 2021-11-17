@@ -1,2 +1,2 @@
-# Strealit-DataApp
+# Streamlit-DataApp
  
