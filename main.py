@@ -1,5 +1,5 @@
 import streamlit as st
-from bs4 import BeautifulSoup as bs
+import bs4
 import pandas as pd
 import requests as rq
 import yfinance as yf
@@ -165,7 +165,7 @@ if option == 'Crypto Top 100':
             "interval": "1d,30d",
             "convert": "USD"
         }
-        url = f"https://api.nomics.com/v1/currencies/ticker?key=88a0aebdffab073e1aae76da4c359f18f524b058&ids={coin}&interval=1d,30d&convert=USD"
+        url = f"https://api.nomics.com/v1/currencies/ticker?key={NOM_API_KEY}&ids={coin}&interval=1d,30d&convert=USD"
         data = rq.post(url=url).json()
 
         # print(data[0])
