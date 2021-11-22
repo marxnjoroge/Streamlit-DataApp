@@ -5,6 +5,8 @@ yfinance
 json
 streamlit.components.v1
 random
+matplotlib
+_lock = matplotlib.lock
 matplotlib.pyplot
 _lock = pyplot.lock
 matplotlib.animation
