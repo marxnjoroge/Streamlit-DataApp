@@ -32,7 +32,7 @@ def bubbleSort(arr):
         for j in range(i):
             if arr[j] > arr[j + 1]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
-            yield *arr,
+            yield arr,
 
 
 def mergeSort(arr):
@@ -65,18 +65,18 @@ def mergeSort(arr):
             arr[k] = righthalf[j]
             j = j+1
             k = k+1
-            yield *arr,
-        yield *arr,
-    yield *arr,
+            yield arr,
+        yield arr,
+    yield arr,
 
 
 def quickSort(arr, left, right):
-    yield *arr,
+    yield arr,
     if left < right and len(arr) > 1:
         pivotindex = int(partition(arr, left, right))
         yield from quickSort(arr, left, pivotindex - 1)
         yield from quickSort(arr, pivotindex + 1, right)
-    yield *arr,
+    yield arr,
 
 
 def partition(arr, left, right):
