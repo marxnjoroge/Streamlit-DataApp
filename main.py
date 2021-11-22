@@ -395,7 +395,7 @@ if option == 'Sort Visualizations':
             text.set_text("No. of operations: {}".format(epochs[0]))
             epochs[0] += 1
 
-            return *bar_rec,
+            return bar_rec,
 
 
         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
@@ -449,7 +449,7 @@ if option == 'Sort Visualizations':
             text.set_text("No. of operations: {}".format(epochs[0]))
             epochs[0] += 1
 
-            return *bar_rec,
+            return bar_rec,
 
 
         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
