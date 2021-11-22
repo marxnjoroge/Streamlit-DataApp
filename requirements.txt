@@ -6,9 +6,8 @@ json
 streamlit.components.v1
 random
 matplotlib
-_lock = matplotlib.lock
 matplotlib.pyplot
-_lock = pyplot.lock
+#_lock = pyplot.lock
 matplotlib.animation
-_lock = animation.lock
+#_lock = animation.lock
 datetime
