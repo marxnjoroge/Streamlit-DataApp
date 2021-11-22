@@ -7,7 +7,9 @@ import json
 import streamlit.components.v1 as components
 import random
 import matplotlib.pyplot as plt
+_lock = pyplot.lock
 import matplotlib.animation as anim
+_lock = animation.lock
 from datetime import datetime
 
 st.set_page_config(layout="wide", )
@@ -30,7 +32,7 @@ def bubbleSort(arr):
         for j in range(i):
             if arr[j] > arr[j + 1]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
-            yield arr,
+            yield *arr,
 
 
 def mergeSort(arr):
@@ -63,18 +65,18 @@ def mergeSort(arr):
             arr[k] = righthalf[j]
             j = j+1
             k = k+1
-            yield arr,
-        yield arr,
-    yield arr,
+            yield *arr,
+        yield *arr,
+    yield *arr,
 
 
 def quickSort(arr, left, right):
-    yield arr,
+    yield *arr,
     if left < right and len(arr) > 1:
         pivotindex = int(partition(arr, left, right))
         yield from quickSort(arr, left, pivotindex - 1)
         yield from quickSort(arr, pivotindex + 1, right)
-    yield arr,
+    yield *arr,
 
 
 def partition(arr, left, right):
@@ -221,19 +223,21 @@ if option == 'Crypto Top 100':
     if period == '1D':
         col3.subheader("One Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
-        plt.figure(figsize=(5, 25))
-        plt.subplots_adjust(top=1, bottom=0)
-        df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
-        col3.pyplot(plt)
+        with _lock:
+            plt.figure(figsize=(5, 25))
+            plt.subplots_adjust(top=1, bottom=0)
+            df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
+            col3.pyplot(plt)
 
     elif period == '30D':
         col3.subheader("30 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_30d'])
-        plt.figure(figsize=(7, 35))
-        plt.subplots_adjust(top=1, bottom=0)
-        df_change['price_change_pct_30d'].plot(kind='barh',
-                                              color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
-        col3.pyplot(plt)
+        with _lock:
+            plt.figure(figsize=(7, 35))
+            plt.subplots_adjust(top=1, bottom=0)
+            df_change['price_change_pct_30d'].plot(kind='barh',
+                                                  color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
+            col3.pyplot(plt)
 
 # if option == 'Crypto Chart':
 #
@@ -305,8 +309,7 @@ if option == 'Sort Visualizations':
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
 
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
+        
 
         n = st.slider(label="Values", min_value=20, max_value=100)
         alg = 2
@@ -317,39 +320,42 @@ if option == 'Sort Visualizations':
         algo = mergeSort(array)
 
         # Initialize fig
-        fig, ax = plt.subplots()
-        ax.set_title(title)
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
+        with _lock:
+            fig, ax = plt.subplots()
+            ax.set_title(title)
 
-        bar_rec = ax.bar(range(len(array)), array, align='edge')
+            bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-        ax.set_xlim(0, n)
-        ax.set_ylim(0, int(n * 1.06))
+            ax.set_xlim(0, n)
+            ax.set_ylim(0, int(n * 1.06))
 
-        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-        epochs = [0]
-
-
-        def init():
-            ax.bar(range(len(array)), array, align='edge')
-
-        # @st.cache
-        def update_plot(array, rect, epochs):
-            for rect, val in zip(rect, array):
-                rect.set_height(val)
-                rect.set_color("#cc00cc")
-            text.set_text("No. of operations: {}".format(epochs[0]))
-            epochs[0] += 1
-
-            return bar_rec,
+            epochs = [0]
 
 
-        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-                                   repeat=False)
-        # plt.show()
-        # st.pyplot(plt)
+            def init():
+                ax.bar(range(len(array)), array, align='edge')
 
-        components.html(anima.to_jshtml(), height=1000)
+            @st.cache
+            def update_plot(array, rect, epochs):
+                for rect, val in zip(rect, array):
+                    rect.set_height(val)
+                    rect.set_color("#cc00cc")
+                text.set_text("No. of operations: {}".format(epochs[0]))
+                epochs[0] += 1
+
+                return *bar_rec,
+
+
+            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+                                       repeat=False)
+            # plt.show()
+            # st.pyplot(plt)
+
+            components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Quick':
         st.subheader(title)
@@ -358,10 +364,7 @@ if option == 'Sort Visualizations':
                  "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
-
+     
         n = st.slider(label="Values", min_value=20, max_value=100)
         alg = 3
         cache = 500
@@ -371,39 +374,42 @@ if option == 'Sort Visualizations':
         algo = quickSort(array, 0, len(array) - 1)
 
         # Initialize fig
-        fig, ax = plt.subplots()
-        ax.set_title(title)
+        with _lock:
+            plt.rcParams["figure.figsize"] = (7, 4)
+            plt.rcParams["font.size"] = 8
+            fig, ax = plt.subplots()
+            ax.set_title(title)
 
-        bar_rec = ax.bar(range(len(array)), array, align='edge')
+            bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-        ax.set_xlim(0, n)
-        ax.set_ylim(0, int(n * 1.06))
+            ax.set_xlim(0, n)
+            ax.set_ylim(0, int(n * 1.06))
 
-        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-        epochs = [0]
-
-
-        def init():
-            ax.bar(range(len(array)), array, align='edge', color="#0033ff")
-
-        # @st.cache
-        def update_plot(array, rect, epochs):
-            for rect, val in zip(rect, array):
-                rect.set_height(val)
-                rect.set_color("#33cccc")
-            text.set_text("No. of operations: {}".format(epochs[0]))
-            epochs[0] += 1
-
-            return bar_rec,
+            epochs = [0]
 
 
-        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-                                   repeat=False)
-        # plt.show()
-        # st.pyplot(plt)
+            def init():
+                ax.bar(range(len(array)), array, align='edge', color="#0033ff")
 
-        components.html(anima.to_jshtml(), height=1000)
+            # @st.cache
+            def update_plot(array, rect, epochs):
+                for rect, val in zip(rect, array):
+                    rect.set_height(val)
+                    rect.set_color("#33cccc")
+                text.set_text("No. of operations: {}".format(epochs[0]))
+                epochs[0] += 1
+
+                return *bar_rec,
+
+
+            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+                                       repeat=False)
+            # plt.show()
+            # st.pyplot(plt)
+
+            components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Bubble':
         st.subheader(title)
@@ -412,10 +418,7 @@ if option == 'Sort Visualizations':
                  "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
-
+       
         n = st.slider(label="Values", min_value=20, max_value=55)
         alg = 1
         cache = n * (n**1/2)
@@ -425,40 +428,44 @@ if option == 'Sort Visualizations':
         algo = bubbleSort(array)
 
         # Initialize fig
-        fig, ax = plt.subplots()
-        ax.set_title(title)
+        with _lock:
+            plt.rcParams["figure.figsize"] = (7, 4)
+            plt.rcParams["font.size"] = 8
 
-        bar_rec = ax.bar(range(len(array)), array, align='edge', color="#cccccc")
+            fig, ax = plt.subplots()
+            ax.set_title(title)
 
-        ax.set_xlim(0, n)
-        ax.set_ylim(0, int(n * 1.06))
+            bar_rec = ax.bar(range(len(array)), array, align='edge', color="#cccccc")
 
-        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+            ax.set_xlim(0, n)
+            ax.set_ylim(0, int(n * 1.06))
 
-        epochs = [0]
+            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-        def init():
-            ax.bar(range(len(array)), array, align='edge', color="#00cccc")
+            epochs = [0]
 
-
-        # @st.cache
-        def update_plot(array, rect, epochs):
-            for rect, val in zip(rect, array):
-                rect.set_height(val)
-                rect.set_color("#cc00cc")
-            text.set_text("No. of operations: {}".format(epochs[0]))
-            epochs[0] += 1
-
-            return bar_rec,
+            def init():
+                ax.bar(range(len(array)), array, align='edge', color="#00cccc")
 
 
-        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
-                                   interval=20,
-                                   repeat=False)
-        # plt.show()
-        # st.pyplot(plt)
+            # @st.cache
+            def update_plot(array, rect, epochs):
+                for rect, val in zip(rect, array):
+                    rect.set_height(val)
+                    rect.set_color("#cc00cc")
+                text.set_text("No. of operations: {}".format(epochs[0]))
+                epochs[0] += 1
 
-        components.html(anima.to_jshtml(), height=800)
+                return *bar_rec,
+
+
+            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
+                                       interval=20,
+                                       repeat=False)
+            # plt.show()
+            # st.pyplot(plt)
+
+            components.html(anima.to_jshtml(), height=800)
 
 if option == 'Blockchain Explorer':
     col2.header(option)
