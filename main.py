@@ -14,7 +14,7 @@ from datetime import datetime
 
 st.set_page_config(layout="wide", )
 
-@st.cache
+# @st.cache
 def load_data():
     url = "https://finviz.com/crypto_performance.ashx"
     html = pd.read_html(url, header=0)
@@ -137,7 +137,8 @@ if option == 'Crypto Top 100':
                "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
                "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
     st.write("This tool has become a 'go to' screen and plans are to expand on this page as the basis for a more expansive dashboard")
-    @st.cache
+    
+    # @st.cache
     def load_data():
 
         nom_url = "https://nomics.com/"
@@ -159,9 +160,9 @@ if option == 'Crypto Top 100':
         coin = ','.join(coins)
         
         # st.write("DB username:", st.secrets["db_username"])        
-        # NOM_API_KEY = "NOM_API_KEY"
+        NOM_API_KEY = st.secrets["NOM_API_KEY"]
         nom_headers = {
-            "key": st.secrets["NOM_API_KEY"]
+            "key": "NOM_API_KEY"
         }
         nom_params = {
             "ids": coin,
@@ -340,7 +341,7 @@ if option == 'Sort Visualizations':
         def init():
             ax.bar(range(len(array)), array, align='edge')
 
-        @st.cache
+        # @st.cache
         def update_plot(array, rect, epochs):
             for rect, val in zip(rect, array):
                 rect.set_height(val)
