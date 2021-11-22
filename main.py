@@ -7,9 +7,9 @@ import json
 import streamlit.components.v1 as components
 import random
 import matplotlib.pyplot as plt
-_lock = pyplot.lock
+#_lock = pyplot.lock
 import matplotlib.animation as anim
-_lock = animation.lock
+#_lock = animation.lock
 from datetime import datetime
 
 st.set_page_config(layout="wide", )
