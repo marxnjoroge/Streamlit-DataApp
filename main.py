@@ -223,21 +223,21 @@ if option == 'Crypto Top 100':
     if period == '1D':
         col3.subheader("One Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
-        with _lock:
-            plt.figure(figsize=(5, 25))
-            plt.subplots_adjust(top=1, bottom=0)
-            df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
-            col3.pyplot(plt)
+        # with _lock:
+        plt.figure(figsize=(5, 25))
+        plt.subplots_adjust(top=1, bottom=0)
+        df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
+        col3.pyplot(plt)
 
     elif period == '30D':
         col3.subheader("30 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_30d'])
-        with _lock:
-            plt.figure(figsize=(7, 35))
-            plt.subplots_adjust(top=1, bottom=0)
-            df_change['price_change_pct_30d'].plot(kind='barh',
-                                                  color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
-            col3.pyplot(plt)
+        # with _lock:
+        plt.figure(figsize=(7, 35))
+        plt.subplots_adjust(top=1, bottom=0)
+        df_change['price_change_pct_30d'].plot(kind='barh',
+                                              color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
+        col3.pyplot(plt)
 
 # if option == 'Crypto Chart':
 #
@@ -322,40 +322,40 @@ if option == 'Sort Visualizations':
         # Initialize fig
         plt.rcParams["figure.figsize"] = (7, 4)
         plt.rcParams["font.size"] = 8
-        with _lock:
-            fig, ax = plt.subplots()
-            ax.set_title(title)
+        # with _lock:
+        fig, ax = plt.subplots()
+        ax.set_title(title)
 
-            bar_rec = ax.bar(range(len(array)), array, align='edge')
+        bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-            ax.set_xlim(0, n)
-            ax.set_ylim(0, int(n * 1.06))
+        ax.set_xlim(0, n)
+        ax.set_ylim(0, int(n * 1.06))
 
-            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-            epochs = [0]
-
-
-            def init():
-                ax.bar(range(len(array)), array, align='edge')
-
-            @st.cache
-            def update_plot(array, rect, epochs):
-                for rect, val in zip(rect, array):
-                    rect.set_height(val)
-                    rect.set_color("#cc00cc")
-                text.set_text("No. of operations: {}".format(epochs[0]))
-                epochs[0] += 1
-
-                return bar_rec,
+        epochs = [0]
 
 
-            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+        def init():
+            ax.bar(range(len(array)), array, align='edge')
+
+        @st.cache
+        def update_plot(array, rect, epochs):
+            for rect, val in zip(rect, array):
+                rect.set_height(val)
+                rect.set_color("#cc00cc")
+            text.set_text("No. of operations: {}".format(epochs[0]))
+            epochs[0] += 1
+
+            return bar_rec,
+
+
+        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
                                        repeat=False)
-            # plt.show()
-            # st.pyplot(plt)
+        # plt.show()
+        # st.pyplot(plt)
 
-            components.html(anima.to_jshtml(), height=1000)
+        components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Quick':
         st.subheader(title)
@@ -374,42 +374,42 @@ if option == 'Sort Visualizations':
         algo = quickSort(array, 0, len(array) - 1)
 
         # Initialize fig
-        with _lock:
-            plt.rcParams["figure.figsize"] = (7, 4)
-            plt.rcParams["font.size"] = 8
-            fig, ax = plt.subplots()
-            ax.set_title(title)
+        # with _lock:
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
+        fig, ax = plt.subplots()
+        ax.set_title(title)
 
-            bar_rec = ax.bar(range(len(array)), array, align='edge')
+        bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-            ax.set_xlim(0, n)
-            ax.set_ylim(0, int(n * 1.06))
+        ax.set_xlim(0, n)
+        ax.set_ylim(0, int(n * 1.06))
 
-            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-            epochs = [0]
-
-
-            def init():
-                ax.bar(range(len(array)), array, align='edge', color="#0033ff")
-
-            # @st.cache
-            def update_plot(array, rect, epochs):
-                for rect, val in zip(rect, array):
-                    rect.set_height(val)
-                    rect.set_color("#33cccc")
-                text.set_text("No. of operations: {}".format(epochs[0]))
-                epochs[0] += 1
-
-                return bar_rec,
+        epochs = [0]
 
 
-            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-                                       repeat=False)
-            # plt.show()
-            # st.pyplot(plt)
+        def init():
+            ax.bar(range(len(array)), array, align='edge', color="#0033ff")
 
-            components.html(anima.to_jshtml(), height=1000)
+        # @st.cache
+        def update_plot(array, rect, epochs):
+            for rect, val in zip(rect, array):
+                rect.set_height(val)
+                rect.set_color("#33cccc")
+            text.set_text("No. of operations: {}".format(epochs[0]))
+            epochs[0] += 1
+
+            return bar_rec,
+
+
+        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+                                   repeat=False)
+        # plt.show()
+        # st.pyplot(plt)
+
+        components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Bubble':
         st.subheader(title)
@@ -428,44 +428,44 @@ if option == 'Sort Visualizations':
         algo = bubbleSort(array)
 
         # Initialize fig
-        with _lock:
-            plt.rcParams["figure.figsize"] = (7, 4)
-            plt.rcParams["font.size"] = 8
+        # with _lock:
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
 
-            fig, ax = plt.subplots()
-            ax.set_title(title)
+        fig, ax = plt.subplots()
+        ax.set_title(title)
 
-            bar_rec = ax.bar(range(len(array)), array, align='edge', color="#cccccc")
+        bar_rec = ax.bar(range(len(array)), array, align='edge', color="#cccccc")
 
-            ax.set_xlim(0, n)
-            ax.set_ylim(0, int(n * 1.06))
+        ax.set_xlim(0, n)
+        ax.set_ylim(0, int(n * 1.06))
 
-            text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-            epochs = [0]
+        epochs = [0]
 
-            def init():
-                ax.bar(range(len(array)), array, align='edge', color="#00cccc")
-
-
-            # @st.cache
-            def update_plot(array, rect, epochs):
-                for rect, val in zip(rect, array):
-                    rect.set_height(val)
-                    rect.set_color("#cc00cc")
-                text.set_text("No. of operations: {}".format(epochs[0]))
-                epochs[0] += 1
-
-                return bar_rec,
+        def init():
+            ax.bar(range(len(array)), array, align='edge', color="#00cccc")
 
 
-            anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
-                                       interval=20,
-                                       repeat=False)
-            # plt.show()
-            # st.pyplot(plt)
+        # @st.cache
+        def update_plot(array, rect, epochs):
+            for rect, val in zip(rect, array):
+                rect.set_height(val)
+                rect.set_color("#cc00cc")
+            text.set_text("No. of operations: {}".format(epochs[0]))
+            epochs[0] += 1
 
-            components.html(anima.to_jshtml(), height=800)
+            return bar_rec,
+
+
+        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
+                                   interval=20,
+                                   repeat=False)
+        # plt.show()
+        # st.pyplot(plt)
+
+        components.html(anima.to_jshtml(), height=800)
 
 if option == 'Blockchain Explorer':
     col2.header(option)
