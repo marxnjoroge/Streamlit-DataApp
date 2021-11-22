@@ -161,7 +161,7 @@ if option == 'Crypto Top 100':
         # st.write("DB username:", st.secrets["db_username"])        
         # NOM_API_KEY = "NOM_API_KEY"
         nom_headers = {
-            st.write("key":,st.secrets["NOM_API_KEY"])
+            "key": st.secrets["NOM_API_KEY"]
         }
         nom_params = {
             "ids": coin,
