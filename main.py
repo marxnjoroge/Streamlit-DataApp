@@ -157,10 +157,11 @@ if option == 'Crypto Top 100':
             coins.append(i['id'])
 
         coin = ','.join(coins)
-
-        NOM_API_KEY = "NOM_API_KEY"
+        
+        # st.write("DB username:", st.secrets["db_username"])        
+        # NOM_API_KEY = "NOM_API_KEY"
         nom_headers = {
-            "key": NOM_API_KEY
+            st.write("key":,st.secrets["NOM_API_KEY"])
         }
         nom_params = {
             "ids": coin,
@@ -485,7 +486,7 @@ if option == 'Blockchain Explorer':
 
         btc_status_endpoint = "https://btc.getblock.io/mainnet/"
         headers = {
-            "X-API-KEY": "GETBLOCK_API_KEY"
+            "X-API-KEY": st.secrets["GETBLOCK_API_KEY"]
         }
 
 
@@ -558,7 +559,7 @@ if option == 'Blockchain Explorer':
         st.write("""The Ehereum blockchain uses the API call mothod, the parameters for each network remain chain-specific.""")
 
         GETBLOCK_API_URL = "https://eth.getblock.io/mainnet/"
-        GETBLOCK_API_KEY = "GETBLOCK_API_KEY"
+        GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
 
         eth_headers = {
             "X-API-KEY": GETBLOCK_API_KEY
@@ -631,7 +632,7 @@ if option == 'Blockchain Explorer':
                    below uses the Rosetta API call.""")
 
         ada_status_endpoint = "https://ada.getblock.io/mainnet/network/status"
-        GETBLOCK_API_KEY = GETBLOCK_API_KEY
+        GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
         headers = {
             "X-API-KEY": GETBLOCK_API_KEY,
             "Content-Type": "application/json"
