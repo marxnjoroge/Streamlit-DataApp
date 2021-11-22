@@ -156,7 +156,7 @@ if option == 'Crypto Top 100':
 
         coin = ','.join(coins)
 
-        NOM_API_KEY = "88a0aebdffab073e1aae76da4c359f18f524b058"
+        NOM_API_KEY = "NOM_API_KEY"
         nom_headers = {
             "key": NOM_API_KEY
         }
@@ -165,7 +165,7 @@ if option == 'Crypto Top 100':
             "interval": "1d,30d",
             "convert": "USD"
         }
-        url = f"https://api.nomics.com/v1/currencies/ticker?key=88a0aebdffab073e1aae76da4c359f18f524b058&ids={coin}&interval=1d,30d&convert=USD"
+        url = f"https://api.nomics.com/v1/currencies/ticker?key={NOM_API_KEY}&ids={coin}&interval=1d,30d&convert=USD"
         data = rq.post(url=url).json()
 
         # print(data[0])
@@ -478,7 +478,7 @@ if option == 'Blockchain Explorer':
 
         btc_status_endpoint = "https://btc.getblock.io/mainnet/"
         headers = {
-            "X-API-KEY": "e2c451f9-be21-4313-a211-039bc3ede480"
+            "X-API-KEY": "GETBLOCK_API_KEY"
         }
 
 
@@ -551,7 +551,7 @@ if option == 'Blockchain Explorer':
         st.write("""The Ehereum blockchain uses the API call mothod, the parameters for each network remain chain-specific.""")
 
         GETBLOCK_API_URL = "https://eth.getblock.io/mainnet/"
-        GETBLOCK_API_KEY = "e2c451f9-be21-4313-a211-039bc3ede480"
+        GETBLOCK_API_KEY = "GETBLOCK_API_KEY"
 
         eth_headers = {
             "X-API-KEY": GETBLOCK_API_KEY
@@ -624,7 +624,7 @@ if option == 'Blockchain Explorer':
                    below uses the Rosetta API call.""")
 
         ada_status_endpoint = "https://ada.getblock.io/mainnet/network/status"
-        GETBLOCK_API_KEY = "e2c451f9-be21-4313-a211-039bc3ede480"
+        GETBLOCK_API_KEY = GETBLOCK_API_KEY
         headers = {
             "X-API-KEY": GETBLOCK_API_KEY,
             "Content-Type": "application/json"
