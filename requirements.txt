@@ -2,7 +2,7 @@ bs4
 pandas
 requests
 yfinance
-json
+#json
 streamlit.components.v1
 random
 matplotlib
