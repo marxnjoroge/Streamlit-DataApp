@@ -543,9 +543,9 @@ if option == 'Blockchain Explorer':
             lastn.append(new_block)
             btc_hash = btc_blockdata['result']['previousblockhash']
 
-        df = pd.DataFrame(columns=['index', 'create_time', 'blockhash', 'blocksize', 'numTransactions'])
+        df = pd.DataFrame(columns=['index', 'timestamp (utc)', 'blockhash', 'blocksize', 'numTransactions'])
         df['index'] = index
-        df['create_time'] = time
+        df['timestamp (utc)'] = time
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
         df['numTransactions'] = numTransactions
@@ -617,9 +617,9 @@ if option == 'Blockchain Explorer':
 
             dec_blocks.append(dc)
 
-        df = pd.DataFrame(columns=['blocknumber', 'timestamp', 'blockhash', 'gasLimit', 'gasUsed'])
+        df = pd.DataFrame(columns=['blocknumber', 'timestamp (utc)', 'blockhash', 'gasLimit', 'gasUsed'])
         df['blocknumber'] = blocknumber
-        df['timestamp'] = timestamp
+        df['timestamp (utc)'] = timestamp
         df['blockhash'] = blockhash
         df['gasLimit'] = gasLimit
         df['gasUsed'] = gasUsed
@@ -689,10 +689,10 @@ if option == 'Blockchain Explorer':
             curr_block_idx = block_data['block']['parent_block_identifier']['index']
             curr_block_hash = block_data['block']['parent_block_identifier']['hash']
 
-        df = pd.DataFrame(columns=['epoch', 'index', 'timestamp', 'blockhash', 'blocksize'])
+        df = pd.DataFrame(columns=['epoch', 'index', 'timestamp (utc)', 'blockhash', 'blocksize'])
         df['epoch'] = epoch
         df['index'] = index
-        df['timestamp'] = timestamp
+        df['timestamp (utc)'] = timestamp
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
 
