@@ -606,11 +606,11 @@ if option == 'Blockchain Explorer':
         dec_blocks = []
         for dc in latest_blocks:
             dc['blocknumber'] = int(dc['blocknumber'], 16)
-            dc['timestamp'] = datetime.fromtimestamp(int(dc['timestamp'], 16)).strftime('%Y.%m.%d %H:%M:%S')
+            dc['timestamp'] = int(dc['timestamp'], 16)
             dc['gasLimit'] = int(dc['gasLimit'], 16)
             dc['gasUsed'] = int(dc['gasUsed'], 16)
             blocknumber.append(dc['blocknumber'])
-            timestamp.append(dc['timestamp'])
+            timestamp.append(datetime.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(dc['blockhash'])
             gasLimit.append(dc['gasLimit'])
             gasUsed.append(dc['gasUsed'])
