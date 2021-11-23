@@ -7,12 +7,14 @@ import json
 import streamlit.components.v1 as components
 import random
 import matplotlib.pyplot as plt
+#_lock = pyplot.lock
 import matplotlib.animation as anim
+#_lock = animation.lock
 from datetime import datetime
 
 st.set_page_config(layout="wide", )
 
-@st.cache
+# @st.cache
 def load_data():
     url = "https://finviz.com/crypto_performance.ashx"
     html = pd.read_html(url, header=0)
@@ -30,7 +32,7 @@ def bubbleSort(arr):
         for j in range(i):
             if arr[j] > arr[j + 1]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
-            yield *arr,
+            yield (*arr,)
 
 
 def mergeSort(arr):
@@ -53,28 +55,28 @@ def mergeSort(arr):
                 arr[k] = righthalf[j]
                 j = j+1
             k = k+1
-            yield *arr,
+            yield (*arr,)
         while i < len(lefthalf):
             arr[k] = lefthalf[i]
             i = i+1
             k = k+1
-            yield *arr,
+            yield (*arr,)
         while j < len(righthalf):
             arr[k] = righthalf[j]
             j = j+1
             k = k+1
-            yield *arr,
-        yield *arr,
-    yield *arr,
+            yield (*arr,)
+        yield (*arr,)
+    yield (*arr,)
 
 
 def quickSort(arr, left, right):
-    yield *arr,
+    yield arr
     if left < right and len(arr) > 1:
         pivotindex = int(partition(arr, left, right))
         yield from quickSort(arr, left, pivotindex - 1)
         yield from quickSort(arr, pivotindex + 1, right)
-    yield *arr,
+    yield (*arr,)
 
 
 def partition(arr, left, right):
@@ -101,7 +103,7 @@ col2, col3 = st.columns((2,1))
 # Sidebar + Main panel
 
 col1.header("Navigation")
-option = col1.selectbox("Projects", ('Home', 'Sort Visualizations', 'Crypto Top 100', 'Blockchain Explorer'))
+option = col1.selectbox("Projects", ('Ticker', 'Sort Visualizations', 'Crypto Top 100', 'Blockchain Explorer'))
 
 expand = st.expander("About")
 expand.markdown("""
@@ -111,14 +113,15 @@ matplotlib, matplotlib.animation, time, random, json.
 * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API.
 * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
  streamlit tips and tricks.
+* ** Authored by:** Marx Njoroge, ©2021.
  """)
 
-if option == 'Home':
-    st.header("Marx Njoroge's Python Project")
-    st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I began a Python Bootcamp in August of this year and decided to create this page to display some of the coding skills I've learned in just three months.")
+if option == 'Ticker':
+    st.header("Marx's Python Lab")
+    st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
     
-    st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block explorer.")
-    symbol = col1.text_input("Ticker", 'TSLA', max_chars=7)
+    st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
+    symbol = col1.text_input("Enter stock Ticker:", 'TSLA', max_chars=7)
     st.write(symbol)
     tickerData = yf.Ticker(symbol)
     tickerDf = tickerData.history(period='ytd', interval='1d')
@@ -134,8 +137,9 @@ if option == 'Crypto Top 100':
                "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
                "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
                "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
-    st.write("This tool has become a 'go to' screen and plans are to expand on this page as the basis for a more expansive dashboard")
-    @st.cache
+    st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
+    
+    # @st.cache
     def load_data():
 
         nom_url = "https://nomics.com/"
@@ -155,10 +159,11 @@ if option == 'Crypto Top 100':
             coins.append(i['id'])
 
         coin = ','.join(coins)
-
-        NOM_API_KEY = "88a0aebdffab073e1aae76da4c359f18f524b058"
+        
+        # st.write("DB username:", st.secrets["db_username"])        
+        NOM_API_KEY = st.secrets["NOM_API_KEY"]
         nom_headers = {
-            "key": NOM_API_KEY
+            "key": "NOM_API_KEY"
         }
         nom_params = {
             "ids": coin,
@@ -221,6 +226,7 @@ if option == 'Crypto Top 100':
     if period == '1D':
         col3.subheader("One Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
+        # with _lock:
         plt.figure(figsize=(5, 25))
         plt.subplots_adjust(top=1, bottom=0)
         df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
@@ -229,6 +235,7 @@ if option == 'Crypto Top 100':
     elif period == '30D':
         col3.subheader("30 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_30d'])
+        # with _lock:
         plt.figure(figsize=(7, 35))
         plt.subplots_adjust(top=1, bottom=0)
         df_change['price_change_pct_30d'].plot(kind='barh',
@@ -301,14 +308,14 @@ if option == 'Sort Visualizations':
         col2.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
+        st.write("**Note:** sorting more values takes longer to render.")
 
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
+        
 
-        n = st.slider(label="Values", min_value=20, max_value=100)
+        n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 2
         cache = n * 10
         title = "Merge Sort"
@@ -317,6 +324,9 @@ if option == 'Sort Visualizations':
         algo = mergeSort(array)
 
         # Initialize fig
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
+        # with _lock:
         fig, ax = plt.subplots()
         ax.set_title(title)
 
@@ -341,11 +351,11 @@ if option == 'Sort Visualizations':
             text.set_text("No. of operations: {}".format(epochs[0]))
             epochs[0] += 1
 
-            return *bar_rec,
+            return bar_rec,
 
 
         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-                                   repeat=False)
+                                       repeat=False)
         # plt.show()
         # st.pyplot(plt)
 
@@ -355,14 +365,12 @@ if option == 'Sort Visualizations':
         st.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
-
-        n = st.slider(label="Values", min_value=20, max_value=100)
+        st.write("**Note:** sorting more values takes longer to render.")
+     
+        n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 3
         cache = 500
         title = "Quick Sort"
@@ -371,6 +379,9 @@ if option == 'Sort Visualizations':
         algo = quickSort(array, 0, len(array) - 1)
 
         # Initialize fig
+        # with _lock:
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
         fig, ax = plt.subplots()
         ax.set_title(title)
 
@@ -395,7 +406,7 @@ if option == 'Sort Visualizations':
             text.set_text("No. of operations: {}".format(epochs[0]))
             epochs[0] += 1
 
-            return *bar_rec,
+            return bar_rec,
 
 
         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
@@ -409,14 +420,12 @@ if option == 'Sort Visualizations':
         st.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
-
-        n = st.slider(label="Values", min_value=20, max_value=55)
+        st.write("** Note:** sorting more values takes longer to render.")
+       
+        n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 1
         cache = n * (n**1/2)
         title = "Bubble Sort"
@@ -425,6 +434,10 @@ if option == 'Sort Visualizations':
         algo = bubbleSort(array)
 
         # Initialize fig
+        # with _lock:
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
+
         fig, ax = plt.subplots()
         ax.set_title(title)
 
@@ -449,7 +462,7 @@ if option == 'Sort Visualizations':
             text.set_text("No. of operations: {}".format(epochs[0]))
             epochs[0] += 1
 
-            return *bar_rec,
+            return bar_rec,
 
 
         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache,
@@ -469,16 +482,15 @@ if option == 'Blockchain Explorer':
         col2.subheader("Bitcoin RPC API")
         st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different 
                    access methods to each chain's network and data.  The data pulled from the Bitcoin network 
-                   below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.  
-                   Posted below is the raw response for the latest block contents.  Going forward, this will be parsed
-                   in a prettier and more readable table of 'N' latest blocks.""")
+                   below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")  
+        st.write("""Posted below is the parsed data in a more readable table of 'N' latest blocks, and the raw json for the latest block contents.""")
                      
         st.write("""It should be noted that even given a standardized API call mothod, the parameters for each network
                     are chain-specific.""")
 
         btc_status_endpoint = "https://btc.getblock.io/mainnet/"
         headers = {
-            "X-API-KEY": "e2c451f9-be21-4313-a211-039bc3ede480"
+            "X-API-KEY": st.secrets["GETBLOCK_API_KEY"]
         }
 
 
@@ -505,7 +517,7 @@ if option == 'Blockchain Explorer':
         time = []
         blockhash = []
         blocksize = []
-        numTransactions = []
+        nTx = []
 
         for i in range(0, 5):
             last_block_params = {
@@ -517,26 +529,25 @@ if option == 'Blockchain Explorer':
             new_block = {}
             btc_blockdata = rq.post(url=btc_status_endpoint, json=last_block_params, headers=headers).json()
             new_block['index'] = btc_blockdata['result']['height']
-            # noinspection PyTypedDict
-            new_block['create_time'] = datetime.fromtimestamp(int(btc_blockdata['result']['time'])).strftime('%Y.%m.%d %H:%M:%S')
+            new_block['timestamp'] = datetime.fromtimestamp(int(btc_blockdata['result']['time'])).strftime('%Y.%m.%d %H:%M:%S')
             new_block['blockhash'] = btc_blockdata['result']['hash']
             new_block['blocksize'] = btc_blockdata['result']['size']
-            new_block['numTransactions'] = btc_blockdata['result']['nTx']
+            new_block['nTx'] = btc_blockdata['result']['nTx']
             index.append(new_block['index'])
-            time.append(new_block['create_time'])
+            time.append(new_block['timestamp'])
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
-            numTransactions.append(new_block['numTransactions'])
+            nTx.append(new_block['nTx'])
 
             lastn.append(new_block)
             btc_hash = btc_blockdata['result']['previousblockhash']
 
-        df = pd.DataFrame(columns=['index', 'create_time', 'blockhash', 'blocksize', 'numTransactions'])
+        df = pd.DataFrame(columns=['index', 'timestamp (utc)', 'blockhash', 'blocksize', 'no.transactions'])
         df['index'] = index
-        df['create_time'] = time
+        df['timestamp (utc)'] = time
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
-        df['numTransactions'] = numTransactions
+        df['no.transactions'] = nTx
 
         st.dataframe(df)
         st.json(lastn)
@@ -545,13 +556,12 @@ if option == 'Blockchain Explorer':
         col2.subheader("Ethereum RPC API")
         st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different access methods to each 
         chain's network and data.  The data pulled from the Bitcoin network below uses the json/rpc API generalized method for rpc/application 
-        POST API calls to the chain. Posted below is the raw response for the latest block contents.  Going forward, this will be parsed in a 
-        prettier and more readable table of 'N' latest blocks.""")
-
-        st.write("""The Ehereum blockchain uses the API call mothod, the parameters for each network remain chain-specific.""")
+        POST API calls to the chain.""")
+        st.write("""Posted below is the parsed data in more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
+        st.write("""The Ehereum blockchain uses it's own RPC API call method, the parameters for each network remaining chain-specific.""")
 
         GETBLOCK_API_URL = "https://eth.getblock.io/mainnet/"
-        GETBLOCK_API_KEY = "e2c451f9-be21-4313-a211-039bc3ede480"
+        GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
 
         eth_headers = {
             "X-API-KEY": GETBLOCK_API_KEY
@@ -599,16 +609,16 @@ if option == 'Blockchain Explorer':
             dc['gasLimit'] = int(dc['gasLimit'], 16)
             dc['gasUsed'] = int(dc['gasUsed'], 16)
             blocknumber.append(dc['blocknumber'])
-            timestamp.append(dc['timestamp'])
+            timestamp.append(datetime.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(dc['blockhash'])
             gasLimit.append(dc['gasLimit'])
             gasUsed.append(dc['gasUsed'])
 
             dec_blocks.append(dc)
 
-        df = pd.DataFrame(columns=['blocknumber', 'timestamp', 'blockhash', 'gasLimit', 'gasUsed'])
+        df = pd.DataFrame(columns=['blocknumber', 'timestamp (utc)', 'blockhash', 'gasLimit', 'gasUsed'])
         df['blocknumber'] = blocknumber
-        df['timestamp'] = timestamp
+        df['timestamp (utc)'] = timestamp
         df['blockhash'] = blockhash
         df['gasLimit'] = gasLimit
         df['gasUsed'] = gasUsed
@@ -624,7 +634,7 @@ if option == 'Blockchain Explorer':
                    below uses the Rosetta API call.""")
 
         ada_status_endpoint = "https://ada.getblock.io/mainnet/network/status"
-        GETBLOCK_API_KEY = "e2c451f9-be21-4313-a211-039bc3ede480"
+        GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
         headers = {
             "X-API-KEY": GETBLOCK_API_KEY,
             "Content-Type": "application/json"
@@ -669,7 +679,7 @@ if option == 'Blockchain Explorer':
                          'blocksize': block_data['block']['metadata']['size']}
             epoch.append(new_block['epoch'])
             index.append(new_block['index'])
-            timestamp.append(new_block['timestamp'])
+            timestamp.append(datetime.fromtimestamp((new_block['timestamp'])/1000).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
 
@@ -678,10 +688,10 @@ if option == 'Blockchain Explorer':
             curr_block_idx = block_data['block']['parent_block_identifier']['index']
             curr_block_hash = block_data['block']['parent_block_identifier']['hash']
 
-        df = pd.DataFrame(columns=['epoch', 'index', 'timestamp', 'blockhash', 'blocksize'])
+        df = pd.DataFrame(columns=['epoch', 'index', 'timestamp (utc)', 'blockhash', 'blocksize'])
         df['epoch'] = epoch
         df['index'] = index
-        df['timestamp'] = timestamp
+        df['timestamp (utc)'] = timestamp
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
 
