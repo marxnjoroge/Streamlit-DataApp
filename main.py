@@ -680,7 +680,7 @@ if option == 'Blockchain Explorer':
                          'blocksize': block_data['block']['metadata']['size']}
             epoch.append(new_block['epoch'])
             index.append(new_block['index'])
-            timestamp.append(datetime.fromtimestamp((new_block['timestamp'])/1000)).strftime('%Y.%m.%d %H:%M:%S'))
+            timestamp.append(datetime.fromtimestamp((new_block['timestamp'])/1000).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
 
