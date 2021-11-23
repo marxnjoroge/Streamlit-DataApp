@@ -117,10 +117,10 @@ matplotlib, matplotlib.animation, time, random, json.
 
 if option == 'Home':
     st.header("Marx Njoroge's Python Lab")
-    st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I began a Python Bootcamp in August of this year and decided to create this page to display some of the coding skills I've learned in just three months.")
+    st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
     
-    st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block explorer.")
-    symbol = col1.text_input("Ticker", 'TSLA', max_chars=7)
+    st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
+    symbol = col1.text_input("Enter stock Ticker:", 'TSLA', max_chars=7)
     st.write(symbol)
     tickerData = yf.Ticker(symbol)
     tickerDf = tickerData.history(period='ytd', interval='1d')
@@ -136,7 +136,7 @@ if option == 'Crypto Top 100':
                "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
                "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
                "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
-    st.write("This tool has become a 'go to' screen and plans are to expand on this page as the basis for a more expansive dashboard")
+    st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
     
     # @st.cache
     def load_data():
@@ -307,9 +307,10 @@ if option == 'Sort Visualizations':
         col2.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
+        st.write(**Note:** sorting more values takes longer to render.)
 
         
 
@@ -363,9 +364,10 @@ if option == 'Sort Visualizations':
         st.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
+        st.write(**Note:** sorting more values takes longer to render.)
      
         n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 3
@@ -417,9 +419,10 @@ if option == 'Sort Visualizations':
         st.subheader(title)
 
         st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Merge Sort Algorithm.  A Streamlit "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
+        st.write(**Note:** sorting more values takes longer to render.)
        
         n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 1
@@ -479,7 +482,7 @@ if option == 'Blockchain Explorer':
         st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different 
                    access methods to each chain's network and data.  The data pulled from the Bitcoin network 
                    below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")  
-        st.write("""Posted below is the parsed in a prettier and more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
+        st.write("""Posted below is the parsed data in a more readable table of 'N' latest blocks, and the raw json for the latest block contents.""")
                      
         st.write("""It should be noted that even given a standardized API call mothod, the parameters for each network
                     are chain-specific.""")
@@ -554,8 +557,8 @@ if option == 'Blockchain Explorer':
         st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different access methods to each 
         chain's network and data.  The data pulled from the Bitcoin network below uses the json/rpc API generalized method for rpc/application 
         POST API calls to the chain.""")
-        st.write("""Posted below is the parsed in a prettier and more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
-        st.write("""The Ehereum blockchain uses the API call mothod, the parameters for each network remain chain-specific.""")
+        st.write("""Posted below is the parsed data in more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
+        st.write("""The Ehereum blockchain uses it's own RPC API call method, the parameters for each network remaining chain-specific.""")
 
         GETBLOCK_API_URL = "https://eth.getblock.io/mainnet/"
         GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
