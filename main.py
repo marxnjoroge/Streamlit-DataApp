@@ -103,7 +103,7 @@ col2, col3 = st.columns((2,1))
 # Sidebar + Main panel
 
 col1.header("Navigation")
-option = col1.selectbox("Projects", ('Home', 'Sort Visualizations', 'Crypto Top 100', 'Blockchain Explorer'))
+option = col1.selectbox("Projects", ('Ticker', 'Sort Visualizations', 'Crypto Top 100', 'Blockchain Explorer'))
 
 expand = st.expander("About")
 expand.markdown("""
@@ -113,10 +113,11 @@ matplotlib, matplotlib.animation, time, random, json.
 * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API.
 * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
  streamlit tips and tricks.
+* ** Authored by:** Marx Njoroge, ©2021.
  """)
 
-if option == 'Home':
-    st.header("Marx Njoroge's Python Lab")
+if option == 'Ticker':
+    st.header("Marx's Python Lab")
     st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
     
     st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
