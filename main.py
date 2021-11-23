@@ -311,7 +311,7 @@ if option == 'Sort Visualizations':
                  "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-        st.write(**Note:** sorting more values takes longer to render.)
+        st.write("**Note:** sorting more values takes longer to render.")
 
         
 
@@ -368,7 +368,7 @@ if option == 'Sort Visualizations':
                  "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-        st.write(**Note:** sorting more values takes longer to render.)
+        st.write("**Note:** sorting more values takes longer to render.")
      
         n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 3
@@ -423,7 +423,7 @@ if option == 'Sort Visualizations':
                  "to both visualize and animate the Sort Algorithm.  A Streamlit "
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
-        st.write(**Note:** sorting more values takes longer to render.)
+        st.write("** Note:** sorting more values takes longer to render.")
        
         n = st.slider(label="Values", min_value=15, max_value=50)
         alg = 1
