@@ -6,7 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/win_venv" />
       <excludeFolder url="file://$MODULE_DIR$/win10venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (win10venv) (2)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (win10venv) (3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
