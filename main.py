@@ -595,7 +595,7 @@ if option == 'Blockchain Explorer':
             }
             hash_eth_blockdata = rq.post(url=GETBLOCK_API_URL, json=hash_eth_params, headers=eth_headers).json()
             new_block = {'blocknumber': hash_eth_blockdata['result']['number'],
-                         'timestamp': hash_eth_blockdata['result']['timestamp'],
+                         'timestamp': datetime.fromtimestamp(int(hash_eth_blockdata['result']['timestamp'])).strftime('%Y.%m.%d %H:%M:%S')
                          'blockhash': hash_eth_blockdata['result']['hash'],
                          'gasLimit': hash_eth_blockdata['result']['gasLimit'],
                          'gasUsed': hash_eth_blockdata['result']['gasUsed']}
@@ -675,7 +675,7 @@ if option == 'Blockchain Explorer':
             block_data = rq.post(url=ada_block_endpoint, json=block_params, headers=headers).json()
             new_block = {'epoch': block_data['block']['metadata']['epochNo'],
                          'index': block_data['block']['block_identifier']['index'],
-                         'timestamp': block_data['block']['timestamp'],
+                         'timestamp': datetime.fromtimestamp(block_data['block']['timestamp']).strftime('%Y.%m.%d %H:%M:%S'),
                          'blockhash': block_data['block']['block_identifier']['hash'],
                          'blocksize': block_data['block']['metadata']['size']}
             epoch.append(new_block['epoch'])
