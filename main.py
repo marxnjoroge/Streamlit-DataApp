@@ -595,7 +595,7 @@ if option == 'Blockchain Explorer':
             }
             hash_eth_blockdata = rq.post(url=GETBLOCK_API_URL, json=hash_eth_params, headers=eth_headers).json()
             new_block = {'blocknumber': hash_eth_blockdata['result']['number'],
-                         'timestamp': hash_eth_blockdata['result']['timestamp']),
+                         'timestamp': hash_eth_blockdata['result']['timestamp'],
                          'blockhash': hash_eth_blockdata['result']['hash'],
                          'gasLimit': hash_eth_blockdata['result']['gasLimit'],
                          'gasUsed': hash_eth_blockdata['result']['gasUsed']}
