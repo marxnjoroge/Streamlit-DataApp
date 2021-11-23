@@ -595,7 +595,7 @@ if option == 'Blockchain Explorer':
             }
             hash_eth_blockdata = rq.post(url=GETBLOCK_API_URL, json=hash_eth_params, headers=eth_headers).json()
             new_block = {'blocknumber': hash_eth_blockdata['result']['number'],
-                         'timestamp': datetime.fromtimestamp(int(hash_eth_blockdata['result']['timestamp'])).strftime('%Y.%m.%d %H:%M:%S'),
+                         'timestamp': hash_eth_blockdata['result']['timestamp']),
                          'blockhash': hash_eth_blockdata['result']['hash'],
                          'gasLimit': hash_eth_blockdata['result']['gasLimit'],
                          'gasUsed': hash_eth_blockdata['result']['gasUsed']}
@@ -606,7 +606,7 @@ if option == 'Blockchain Explorer':
         dec_blocks = []
         for dc in latest_blocks:
             dc['blocknumber'] = int(dc['blocknumber'], 16)
-            dc['timestamp'] = int(dc['timestamp'], 16)
+            dc['timestamp'] = datetime.fromtimestamp(int(dc['timestamp'], 16)).strftime('%Y.%m.%d %H:%M:%S')
             dc['gasLimit'] = int(dc['gasLimit'], 16)
             dc['gasUsed'] = int(dc['gasUsed'], 16)
             blocknumber.append(dc['blocknumber'])
@@ -675,12 +675,12 @@ if option == 'Blockchain Explorer':
             block_data = rq.post(url=ada_block_endpoint, json=block_params, headers=headers).json()
             new_block = {'epoch': block_data['block']['metadata']['epochNo'],
                          'index': block_data['block']['block_identifier']['index'],
-                         'timestamp': datetime.fromtimestamp(block_data['block']['timestamp']).strftime('%Y.%m.%d %H:%M:%S'),
+                         'timestamp': block_data['block']['timestamp'],
                          'blockhash': block_data['block']['block_identifier']['hash'],
                          'blocksize': block_data['block']['metadata']['size']}
             epoch.append(new_block['epoch'])
             index.append(new_block['index'])
-            timestamp.append(new_block['timestamp'])
+            timestamp.append(datetime.fromtimestamp(new_block['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
 
