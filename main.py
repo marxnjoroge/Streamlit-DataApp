@@ -55,12 +55,12 @@ def mergeSort(arr):
                 arr[k] = righthalf[j]
                 j = j+1
             k = k+1
-            yield arr,
+            yield (*arr,)
         while i < len(lefthalf):
             arr[k] = lefthalf[i]
             i = i+1
             k = k+1
-            yield arr,
+            yield (*arr,)
         while j < len(righthalf):
             arr[k] = righthalf[j]
             j = j+1
@@ -71,7 +71,7 @@ def mergeSort(arr):
 
 
 def quickSort(arr, left, right):
-    yield (*arr,)
+    yield arr
     if left < right and len(arr) > 1:
         pivotindex = int(partition(arr, left, right))
         yield from quickSort(arr, left, pivotindex - 1)
