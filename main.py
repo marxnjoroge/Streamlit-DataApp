@@ -517,7 +517,7 @@ if option == 'Blockchain Explorer':
         time = []
         blockhash = []
         blocksize = []
-        numTransactions = []
+        nTx = []
 
         for i in range(0, 5):
             last_block_params = {
@@ -532,12 +532,12 @@ if option == 'Blockchain Explorer':
             new_block['timestamp'] = datetime.fromtimestamp(int(btc_blockdata['result']['time'])).strftime('%Y.%m.%d %H:%M:%S')
             new_block['blockhash'] = btc_blockdata['result']['hash']
             new_block['blocksize'] = btc_blockdata['result']['size']
-            new_block['no.transactions'] = btc_blockdata['result']['nTx']
+            new_block['nTx'] = btc_blockdata['result']['nTx']
             index.append(new_block['index'])
-            time.append(new_block['create_time'])
+            time.append(new_block['timestamp'])
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
-            numTransactions.append(new_block['no.transactions'])
+            nTx.append(new_block['nTx'])
 
             lastn.append(new_block)
             btc_hash = btc_blockdata['result']['previousblockhash']
@@ -547,7 +547,7 @@ if option == 'Blockchain Explorer':
         df['timestamp (utc)'] = time
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
-        df['no.transactions'] = numTransactions
+        df['no.transactions'] = nTx
 
         st.dataframe(df)
         st.json(lastn)
