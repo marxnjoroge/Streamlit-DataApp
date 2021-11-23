@@ -529,26 +529,25 @@ if option == 'Blockchain Explorer':
             new_block = {}
             btc_blockdata = rq.post(url=btc_status_endpoint, json=last_block_params, headers=headers).json()
             new_block['index'] = btc_blockdata['result']['height']
-            # noinspection PyTypedDict
-            new_block['create_time'] = datetime.fromtimestamp(int(btc_blockdata['result']['time'])).strftime('%Y.%m.%d %H:%M:%S')
+            new_block['timestamp'] = datetime.fromtimestamp(int(btc_blockdata['result']['time'])).strftime('%Y.%m.%d %H:%M:%S')
             new_block['blockhash'] = btc_blockdata['result']['hash']
             new_block['blocksize'] = btc_blockdata['result']['size']
-            new_block['numTransactions'] = btc_blockdata['result']['nTx']
+            new_block['no.transactions'] = btc_blockdata['result']['nTx']
             index.append(new_block['index'])
             time.append(new_block['create_time'])
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
-            numTransactions.append(new_block['numTransactions'])
+            numTransactions.append(new_block['no.transactions'])
 
             lastn.append(new_block)
             btc_hash = btc_blockdata['result']['previousblockhash']
 
-        df = pd.DataFrame(columns=['index', 'timestamp (utc)', 'blockhash', 'blocksize', 'numTransactions'])
+        df = pd.DataFrame(columns=['index', 'timestamp (utc)', 'blockhash', 'blocksize', 'no.transactions'])
         df['index'] = index
         df['timestamp (utc)'] = time
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
-        df['numTransactions'] = numTransactions
+        df['no.transactions'] = numTransactions
 
         st.dataframe(df)
         st.json(lastn)
