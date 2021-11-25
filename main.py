@@ -869,7 +869,7 @@ if option == 'Blockchain Explorer':
     if title == "Ripple: XRP":
 
         col2.subheader("XRP Ledger API")
-        st.image("ripple-logo-background-dark.svg")
+        st.image("ripplesmallimage.png")
         st.write("""Ripple provides it's own gateways to the XRP chains, which present APIs to their unique syntax on their own
         proprietary network and protocolsto provide access to each chain's network and data.  The data pulled from the Ripple network 
         below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")
