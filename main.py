@@ -2,15 +2,15 @@ import streamlit as st
 from bs4 import  BeautifulSoup as bs
 import pandas as pd
 import requests as rq
-import yfinance as yf
+import plotly.graph_objects as go
 import json
 import streamlit.components.v1 as components
 import random
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from datetime import datetime
+from datetime import datetime,timedelta
 
-st.set_page_config(layout="wide", page_title="Marx's Lab")
+st.set_page_config(layout="wide", page_title="Marxian Lab")
 
 padding = 2
 st.markdown(f""" <style>    
@@ -109,48 +109,108 @@ def partition(arr, left, right):
 
     return i
 
+
 col1 = st.sidebar
 col2, col3 = st.columns((2,1))
 
 # ------------------------------- #
 # Sidebar + Main panel
 
-col1.header("Navigation")
-option = col1.selectbox("Projects", ('Ticker', 'Blockchain Explorer', 'Crypto Top 100', 'Sort Visualizations'))
+col1.header("Calabi Yao ")
+option = col1.selectbox("Manifolds", ('Chart', 'Blockchain Explorer', 'Cryptocurrency Top 100', 'Sort Visualizations'))
 
-expand = st.expander("About")
-expand.markdown("""
-* **Python Libraries:** streamlit, streamlit.components, pandas, requests, 
-matplotlib, matplotlib.animation, time, random, json, yfinance.
-* ** Data sources:** [Nomics.com] (https://nomics.com), [Getblock.io] (https://getblock.io), [Yahoo Finance] (https://yahoo.com/finance).
-* ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API.
-* ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
- streamlit tips and tricks.
-* ** Authored by:** Marx Njoroge, ©2021.
- """)
-
-if option == 'Ticker':
-    st.header("Marx's Lab")
+if option == 'Chart':
+    st.header("2Py Lab")
     st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
     
     st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
-    symbol = col1.text_input("Enter Stock Ticker Symbol:", 'TSLA', max_chars=7)
-    st.write(symbol)
-    tickerData = yf.Ticker(symbol)
-    tickerDf = tickerData.history(period='ytd', interval='1d')
+    sym = col1.text_input("Enter Stock Ticker Symbol:", "ETH-USD", max_chars=None)
 
-    st.line_chart(tickerDf.Close)
-    st.image(f"https://finviz.com/chart.ashx?t={symbol}")
+    expand = st.expander("About")
+    expand.markdown("""
+    * **Python Libraries:** streamlit, streamlit.components, pandas, requests, 
+    matplotlib, matplotlib.animation, time, random, json, plotly.
+    * ** Data sources:** [Nomics.com] (https://nomics.com), [Getblock.io] (https://getblock.io), [Coinbase Pro] (https://pro.cloud.coinbase.com), [Yahoo Finance] (https://yahoo.com/finance).
+    * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
+    * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
+     streamlit tips and tricks.
+    * ** Authored by:** Marx Njoroge, ©2021.
+     """)
 
-if option == 'Crypto Top 100':
-    col2.header(option)
-    col2.subheader("Python Web Scraping + API + DataFrames + Matplotlib")
-    st.write("It's fun when a project becomes daily useful. What began as a web scraping exercise evolved into an at-a-glance "
-               "cryptocurrency price change chart.  Web scraping is used to provide the top 100 currency list, which is then fed back to "
-               "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
-               "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
-               "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
-    st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
+    cb_api_url = "https://api.pro.coinbase.com"
+    bar_size = 3600
+    timeend = datetime.now()
+    delta = timedelta(hours=1)
+    timestart = timeend - (168 * delta)
+
+    timeend = timeend.isoformat()
+    timestart = timestart.isoformat()
+
+    params = {
+        "start": timestart,
+        "end": timeend,
+        "granularity": bar_size,
+    }
+    cb_headers = {"Accept": "application/json"}
+
+    cb_data = rq.get(f"{cb_api_url}/products/{sym}/candles",
+                     json=params,
+                     headers=cb_headers)
+    st.subheader(sym.upper())
+    padding = 2
+
+    minselect = col1.select_slider("Time Delta", ["2min", "3min", "5min", "15min", "30min", "60min", "240min"])
+
+    df = pd.DataFrame(cb_data.json(),
+                      columns=['time', 'low', 'high', 'open', 'close', 'volume'])
+    df['date'] = pd.to_datetime(df['time'], unit='s')
+    df = df[['date', 'low', 'high', 'open', 'close', 'volume']]
+    df.set_index("date", inplace=True)
+    df = df.resample(minselect).agg({
+        "open": "first",
+        "high": "max",
+        "low": "min",
+        "close": "last",
+        "volume": "max"
+    })
+    df.reset_index("date", inplace=True)
+
+    fig = go.Figure(data=[go.Candlestick(x=df["date"],
+                                         open=df["open"],
+                                         high=df['high'],
+                                         low=df['low'],
+                                         close=df['close'],
+                                         name=sym,
+                                         increasing_line_color='magenta',
+                                         decreasing_line_color='lightgrey'
+                                         )])
+    fig.update_xaxes(type='category')
+    fig.update_layout(height=600, width=800)
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.write("Using Coinbase Pro's API to populate OHLC data, this chart uses Plotly's Graph Objects library to render the interactive candlestick chart from parsed a Pandas DataFrame.")
+
+    st.dataframe(df)
+    # st.write(df)
+
+    # tickerData = yf.Ticker(symbol)
+    # tickerDf = tickerData.history(period='ytd', interval='1d')
+    #
+    # st.line_chart(tickerDf.Close)
+    # st.image(f"https://finviz.com/chart.ashx?t={symbol}")
+
+if option == 'Cryptocurrency Top 100':
+
+    with st.container():
+        st.header(option)
+        st.subheader("Python Web Scraping + API + Pandas + Matplotlib")
+        st.write("It's fun when a project becomes daily useful. What began as a web scraping exercise evolved into an at-a-glance "
+                   "cryptocurrency price change chart.  Web scraping is used to provide the top 100 currency list, which is then fed back to "
+                   "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
+                   "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
+                   "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
+        st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
     
     # @st.cache
     def load_data():
@@ -223,37 +283,36 @@ if option == 'Crypto Top 100':
         return df
 
 
+    col4, col5 = st.columns((2, 1))
+    with col4: st.subheader("CryptoWatch: (%) Price Change")
     period = st.sidebar.selectbox("Time Period", ('1D', '30D'))
 
-    col2.subheader("CryptoWatch: Per Cent (%) Price Change")
-
     frame = load_data()
-    col2.dataframe(frame)
+    with col4: st.dataframe(frame)
 
     df_change = pd.concat([frame.symbol, frame.price_change_pct_1d, frame.price_change_pct_30d], axis=1)
     df_change = df_change.set_index('symbol')
     df_change['positive_price_change_pct_1d'] = df_change['price_change_pct_1d'] > 0
     df_change['positive_price_change_pct_30d'] = df_change['price_change_pct_30d'] > 0
-    col2.dataframe(df_change)
+    with col4: st.dataframe(df_change)
 
     if period == '1D':
-        col3.subheader("One Day (%) Price Change")
+        with col5: st.subheader("1 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
         # with _lock:
-        plt.figure(figsize=(5, 25))
-        plt.subplots_adjust(top=1, bottom=0)
+        plt.figure(figsize=(6, 20))
+        plt.subplots_adjust(top=0.75, bottom=0)
         df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
-        col3.pyplot(plt)
+        with col5: st.pyplot(plt)
 
     elif period == '30D':
-        col3.subheader("30 Day (%) Price Change")
+        with col5: st.subheader("30 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_30d'])
-        # with _lock:
-        plt.figure(figsize=(7, 35))
-        plt.subplots_adjust(top=1, bottom=0)
+        plt.figure(figsize=(6, 20))
+        plt.subplots_adjust(top=.75, bottom=0)
         df_change['price_change_pct_30d'].plot(kind='barh',
                                               color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
-        col3.pyplot(plt)
+        with col5: st.pyplot(plt)
 
 # if option == 'Crypto Chart':
 #
@@ -488,7 +547,7 @@ if option == 'Sort Visualizations':
 
 if option == 'Blockchain Explorer':
     col2.header(option)
-    title = st.sidebar.radio(label="Latest Blocks from:", options=["Bitcoin: BTC", "Ethereum: ETH", "Binance Smart Chain: BNB", "Cardano: ADA"])
+    title = st.sidebar.radio(label="Latest Blocks from:", options=["Bitcoin: BTC", "Ethereum: ETH", "Binance Smart Chain: BNB", "Cardano: ADA", "Ripple: XRP"])
 
     if title == "Bitcoin: BTC":
 
@@ -644,7 +703,7 @@ if option == 'Blockchain Explorer':
 
     if title == "Cardano: ADA":
 
-        col2.image("Cardano-RGB_Logo-Icon-White.svg")
+        col2.image("cardanosizedlogo.svg")
         st.subheader("Cardano [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API.")
         st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different
                    access methods to each chain's network and data.  The data pulled from the Cardano network
@@ -734,7 +793,6 @@ if option == 'Blockchain Explorer':
             "X-API-KEY": GETBLOCK_API_KEY,
             "Content-Type": "application/json"
         }
-        ## {'jsonrpc': '2.0', 'id': 'binance', 'result': '0xc46d53'} ##
 
         blocknumber = []
         timestamp = []
@@ -807,3 +865,123 @@ if option == 'Blockchain Explorer':
 
         st.dataframe(df)
         st.json(dec_blocks)
+
+    if title == "Ripple: XRP":
+
+        col2.subheader("XRP Ledger API")
+        st.image("ripple-logo-background-dark.svg")
+        st.write("""Ripple provides it's own gateways to the XRP chains, which present APIs to their unique syntax on their own
+        proprietary network and protocolsto provide access to each chain's network and data.  The data pulled from the Ripple network 
+        below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")
+        st.write(
+            """Posted below is the parsed data in a more readable table of 'N' latest blocks, and the raw json for the latest block contents.""")
+
+        st.write("""It should be noted that even given a standardized API call method, the parameters for each network
+                            are chain-specific.""")
+
+        XRP_API_URL = "https://s1.ripple.com:51234/"
+        xrp_headers = {
+            "content-type": "application/json"
+        }
+
+        blocknumber = []
+        timestamp = []
+        block_hash = []
+        total_coins = []
+        transaction_hash = []
+
+        latest_blocks = []
+        latest_tx = []
+
+        init_ledger_hash = "validated"
+        METHOD = "ledger_closed"
+
+        for i in range(0, 1):
+            xrp_params = {
+                "method": METHOD,
+                "params": [
+                    {
+                        "ledger_index": init_ledger_hash
+                    }
+                ]
+            }
+            xrp_data = rq.post(url=XRP_API_URL, json=xrp_params, headers=xrp_headers).json()
+            curr_blockhash = xrp_data['result']['ledger_hash']
+            curr_blockindex = xrp_data['result']['ledger_index']
+            # pprint(xrp_data)
+
+        METHOD = "ledger_data"
+
+        for i in range(0, 10):
+            xrp_params = {
+                "method": METHOD,
+                "params": [
+                    {
+                        "binary": False,
+                        "ledger_hash": curr_blockhash,
+                        "limit": 10
+                    }
+                ]
+            }
+            xrp_data = rq.post(url=XRP_API_URL, json=xrp_params, headers=xrp_headers).json()
+
+            blocknumber.append(xrp_data['result']['ledger']['ledger_index'])
+            timestamp.append(xrp_data['result']['ledger']['close_time_human'])
+            block_hash.append(xrp_data['result']['ledger']['hash'])
+            total_coins.append(xrp_data['result']['ledger']['total_coins'])
+            transaction_hash.append(xrp_data['result']['ledger']['transaction_hash'])
+
+            curr_blockhash = xrp_data['result']['ledger']['parent_hash']
+
+        # pprint(xrp_data)
+
+        st.write("Latest Ledgers (Blocks)")
+
+        df = pd.DataFrame(columns=['blocknumber', 'timestamp', 'block_hash', 'total_coins', 'transaction_hash'])
+        df['blocknumber'] = blocknumber
+        df['timestamp'] = timestamp
+        df['block_hash'] = block_hash
+        df['total_coins'] = total_coins
+        df['transaction_hash'] = transaction_hash
+
+        st.dataframe(df)
+
+        st.write("Latest Transactions")
+
+        txledger_index = []
+        trans_type = []
+        account = []
+        fee = []
+        expiration = []
+        tx_hash = []
+
+        METHOD = "tx_history"
+
+        xrp_tx_params = {
+            "method": METHOD,
+            "params": [
+                {
+                    "start": 0
+                }
+            ]
+        }
+        xrp_tx_data = rq.post(url=XRP_API_URL, json=xrp_tx_params, headers=xrp_headers).json()
+        latest_tx.append(xrp_tx_data['result']['txs'])
+
+        for i in range(0, len(latest_tx[0])):
+            txledger_index.append(latest_tx[0][i]['ledger_index'])
+            trans_type.append(latest_tx[0][i]['TransactionType'])
+            account.append(latest_tx[0][i]['Account'])
+            fee.append(latest_tx[0][i]['Fee'])
+            #     expiration.append(latest_tx[0][tx]['Expiration'])
+            tx_hash.append(latest_tx[0][i]['hash'])
+
+        txdf = pd.DataFrame(columns=['txledger_index', 'trans_type', 'account', 'fee', 'tx_hash'])
+        txdf['txledger_index'] = txledger_index
+        txdf['trans_type'] = trans_type
+        txdf['account'] = account
+        txdf['fee'] = fee
+        # txdf['expiration'] = expiration
+        txdf['tx_hash'] = tx_hash
+
+        st.dataframe(txdf)

@@ -2,7 +2,7 @@ import streamlit as st
 from bs4 import  BeautifulSoup as bs
 import pandas as pd
 import requests as rq
-import yfinance as yf
+import cb_data as yf
 import json
 import streamlit.components.v1 as components
 import random
