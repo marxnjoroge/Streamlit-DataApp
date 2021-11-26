@@ -8,11 +8,12 @@ import streamlit.components.v1 as components
 import random
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from datetime import datetime,timedelta
+from datetime import datetime as dt,timedelta
+import base64
 
-st.set_page_config(layout="wide", page_title="Marxian Lab")
+st.set_page_config(layout="wide", page_title="2Py Labs")
 
-padding = 2
+padding = 3
 st.markdown(f""" <style>    
     .reportview-container .main .block-container{{
         padding-top: {padding}rem;
@@ -116,16 +117,22 @@ col2, col3 = st.columns((2,1))
 # ------------------------------- #
 # Sidebar + Main panel
 
-col1.header("Calabi Yao ")
-option = col1.selectbox("Manifolds", ('Chart', 'Blockchain Explorer', 'Cryptocurrency Top 100', 'Sort Visualizations'))
+# col1.image("2pysidebanner.png")
 
-if option == 'Chart':
-    st.header("2Py Lab")
+col1.header("Einstein-Rosen Bridge")
+option = col1.selectbox("Manifolds", ('Crypto Charts', 'Blockchain Explorer', 'Cryptocurrency Top 100', 'Sort Visualizations'))
+
+if option == 'Crypto Charts':
+    st.header("2Py Labs")
     st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
     
     st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
-    sym = col1.text_input("Enter Stock Ticker Symbol:", "ETH-USD", max_chars=None)
 
+    def st_display_pdf(pdf_file):
+        with open(pdf_file, "rb") as f:
+            base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+        pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}” width=”700″ height=”1000″ type=”application/pdf”>'
+        st.markdown(pdf_display, unsafe_allow_html=True)
     expand = st.expander("About")
     expand.markdown("""
     * **Python Libraries:** streamlit, streamlit.components, pandas, requests, 
@@ -134,12 +141,15 @@ if option == 'Chart':
     * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
     * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
      streamlit tips and tricks.
-    * ** Authored by:** Marx Njoroge, ©2021.
+    * ** Authored by:** Marx Njoroge, ©2021. [Resume] [Sounds of Before] 
      """)
+    with col1:
+        sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
+    col2.image("2pyshadow.png")
 
     cb_api_url = "https://api.pro.coinbase.com"
     bar_size = 3600
-    timeend = datetime.now()
+    timeend = dt.now()
     delta = timedelta(hours=1)
     timestart = timeend - (168 * delta)
 
@@ -155,13 +165,13 @@ if option == 'Chart':
 
     cb_data = rq.get(f"{cb_api_url}/products/{sym}/candles",
                      json=params,
-                     headers=cb_headers)
-    st.subheader(sym.upper())
+                     headers=cb_headers).json()
+    st.subheader(f"{sym.upper()}: ${cb_data[0][4]} | {dt.fromtimestamp(cb_data[0][0]).strftime('%Y.%m.%d %H:%M:%S')}")
     padding = 2
 
     minselect = col1.select_slider("Time Delta", ["2min", "3min", "5min", "15min", "30min", "60min", "240min"])
 
-    df = pd.DataFrame(cb_data.json(),
+    df = pd.DataFrame(cb_data,
                       columns=['time', 'low', 'high', 'open', 'close', 'volume'])
     df['date'] = pd.to_datetime(df['time'], unit='s')
     df = df[['date', 'low', 'high', 'open', 'close', 'volume']]
@@ -386,8 +396,8 @@ if option == 'Sort Visualizations':
         st.write("**Note:** sorting more values takes longer to render.")
 
         
-
-        n = st.slider(label="Values", min_value=15, max_value=50)
+        with col1:
+            n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
         alg = 2
         cache = n * 10
         title = "Merge Sort"
@@ -441,8 +451,8 @@ if option == 'Sort Visualizations':
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
         st.write("**Note:** sorting more values takes longer to render.")
-     
-        n = st.slider(label="Values", min_value=15, max_value=50)
+        with col1:
+            n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
         alg = 3
         cache = 500
         title = "Quick Sort"
@@ -496,8 +506,9 @@ if option == 'Sort Visualizations':
                  "component is then used to dynamically convert the Matplotlib animation "
                  "to javascript in order to render it to html.")
         st.write("** Note:** sorting more values takes longer to render.")
-       
-        n = st.slider(label="Values", min_value=15, max_value=50)
+
+        with col1:
+            n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
         alg = 1
         cache = n * (n**1/2)
         title = "Bubble Sort"
@@ -607,7 +618,7 @@ if option == 'Blockchain Explorer':
             new_block['blocksize'] = btc_blockdata['result']['size']
             new_block['nTx'] = btc_blockdata['result']['nTx']
             index.append(new_block['index'])
-            time.append(datetime.fromtimestamp(new_block['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
+            time.append(dt.fromtimestamp(new_block['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
             nTx.append(new_block['nTx'])
@@ -684,7 +695,7 @@ if option == 'Blockchain Explorer':
             dc['gasLimit'] = int(dc['gasLimit'], 16)
             dc['gasUsed'] = int(dc['gasUsed'], 16)
             blocknumber.append(dc['blocknumber'])
-            timestamp.append(datetime.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
+            timestamp.append(dt.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(dc['blockhash'])
             gasLimit.append(dc['gasLimit'])
             gasUsed.append(dc['gasUsed'])
@@ -845,7 +856,7 @@ if option == 'Blockchain Explorer':
             dc['gasLimit'] = int(dc['gasLimit'], 16)
             dc['gasUsed'] = int(dc['gasUsed'], 16)
             blocknumber.append(dc['blocknumber'])
-            timestamp.append(datetime.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
+            timestamp.append(dt.fromtimestamp(dc['timestamp']).strftime('%Y.%m.%d %H:%M:%S'))
             size.append(dc['size'])
             blockhash.append(dc['blockhash'])
             gasLimit.append(dc['gasLimit'])
