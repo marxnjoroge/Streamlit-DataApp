@@ -12,7 +12,7 @@ from datetime import datetime as dt,timedelta
 import base64
 # import sqllite3
 
-st.set_page_config(layout="wide", page_title="2Py Labs")
+st.set_page_config(layout="wide", page_title="Cryptonomicon")
 padding = 3
 st.markdown(f""" <style>    
     .reportview-container .main .block-container{{
@@ -116,9 +116,9 @@ col2, col3 = st.columns((2,1))
 
 # ------------------------------- #
 # Sidebar + Main panel
-
-col1.header("Einstein-Rosen Bridge")
-option = col1.selectbox("Manifolds", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
+col1.image("Cryptonomiconredsmallbanner.png")
+col1.header("Web 3.0 Layer X")
+option = col1.selectbox("Tools", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
 col2.image("Cryptonomiconredbanner.png")
 
@@ -146,7 +146,8 @@ if option == 'Crypto Charts':
     * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
     * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
      streamlit tips and tricks.
-    * ** Authored by:** Marx Njoroge, ©2021. [Resume] [Sounds of Before] 
+    * ** Authored by:** Marx Njoroge, ©2021. [Resume] [Sounds of Before]
+    * ** Immesurable thanks to [Neal Stephenson] (https://www.nealstephenson.com/). 
      """)
     with col1:
         sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
