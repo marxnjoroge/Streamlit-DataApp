@@ -13,7 +13,7 @@ import base64
 # import sqllite3
 
 st.set_page_config(layout="wide", page_title="2Py Labs")
-
+col2.image("Cryptonomiconredbanner.png")
 padding = 3
 st.markdown(f""" <style>    
     .reportview-container .main .block-container{{
@@ -122,7 +122,7 @@ col1.header("Einstein-Rosen Bridge")
 option = col1.selectbox("Manifolds", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
 if option == 'Cryptonomicom':
-    col2.image("Cryptonomiconredbanner.png")
+
     st.subheader("November 27, 2021")
     st.write("Crypto Watchlist: 16+ | Stock Watchlist: TSLA")
     st.image("TVBlackFridayVix.png")
