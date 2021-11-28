@@ -127,7 +127,7 @@ if option == 'Cryptonomicom':
     st.subheader("November 27, 2021")
     st.write("Crypto Watchlist: 16+ | Stock Watchlist: TSLA")
     st.image("TVBlackFridayVix.png")
-    st.write("I checked my watchlist today and realized that the only stock chart I have looked at in the last 6 months was Tesla.  As economiews adjust to shifts in central Bank, fiscal, currency and trade policy, the emergent cyptocurrency markets increasingly appear to mimic corelative moves in the VIX in sentiment and direction.  As the value of Cryptocurreny networks compounds over time, the logic of inveting in entire ecosystems, like an index of sorts, appeals contrasted against investing in the very top heavy organizational value of an individual company.  The exception to this is Tesla, which is both a top heavy company and also one that behaves like a network.  I've updated my waatchlist to reflect these changes in strategy. - Nov, 28, 2021 @Nairobi, Kenya")
+    st.write("I checked my watchlist today and realized that the only stock chart I have looked at in the last 6 months was Tesla.  As economies adjust to shifts in central Bank, fiscal, currency and trade policy, the emergent cyptocurrency markets increasingly appear to mimic corelative moves in the VIX in sentiment and direction.  As the value of Cryptocurreny networks compounds over time, the logic of inveting in entire ecosystems, like an index of sorts, appeals contrasted against investing in the very top heavy organizational value of an individual company.  The exception to this is Tesla, which is both a top heavy company and also one that behaves like a network.  I've updated my waatchlist to reflect these changes in strategy. - Nov, 28, 2021 @Nairobi, Kenya")
 
 if option == 'Crypto Charts':
 
