@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from datetime import datetime as dt,timedelta
 import base64
+# import sqllite3
 
 st.set_page_config(layout="wide", page_title="2Py Labs")
 
@@ -117,16 +118,19 @@ col2, col3 = st.columns((2,1))
 # ------------------------------- #
 # Sidebar + Main panel
 
-# col1.image("2pysidebanner.png")
-
 col1.header("Einstein-Rosen Bridge")
-option = col1.selectbox("Manifolds", ('Crypto Charts', 'Blockchain Explorer', 'Cryptocurrency Top 100', 'Sort Visualizations'))
+option = col1.selectbox("Manifolds", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
+
+if option == 'Cryptonomicom':
+    col2.image("Cryptonomiconredbanner.png")
+    st.subheader("November 27, 2021")
+    st.write("Crypto Watchlist: 16+ | Stock Watchlist: TSLA")
+    st.image("TVBlackFridayVix.png")
+    st.write("I checked my watchlist today and realized that the only stock chart I have looked at in the last 6 months was Tesla.  As economiew adjust to shifts in central Bank, currency and trade policy, the emergent cyptocurrency markets increasingly appear to mimic corelative moves in the VIX in sentiment and direction.  As the value of Cryptocurreny networks compounds over time, the logic of inveting in entire ecosystems, like an index of sorts, appeals contrasted against investing in the very top heavy organizational value of an individual company.  The exception to this is Tesla, which is both a top heavy company and also one that behaves like a network.  I've updated my waatchlist to reflect these changes in strategy. - Nov, 28, 2021 @Nairobi, Kenya")
 
 if option == 'Crypto Charts':
-    st.header("2Py Labs")
-    st.write("Having spent the better part of my experience in Systems Integration and Operations Engineering, I entered a Python Bootcamp in August of 2021 and decided to create this page to display some of the coding skills I've learned in just three months.")
-    
-    st.write("Here are a few examples of Python programming with a basic Stock Ticker chart lookup tool, a Cryptocurrency Top 100 lookup table by marketcap and Percent Change chart, a Sort Algorythm Visualizer using Matplotlib for data analysis, and a basic (and evolving) Blockchain Block Explorer.")
+
+    st.write("Coinbase Pro Currency Chart (1 min. OHLC basis)")
 
     def st_display_pdf(pdf_file):
         with open(pdf_file, "rb") as f:
@@ -145,7 +149,8 @@ if option == 'Crypto Charts':
      """)
     with col1:
         sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
-    col2.image("2pyshadow.png")
+
+    col2.title("Crypto Data & Stuff")
 
     cb_api_url = "https://api.pro.coinbase.com"
     bar_size = 3600
@@ -175,7 +180,7 @@ if option == 'Crypto Charts':
                       columns=['time', 'low', 'high', 'open', 'close', 'volume'])
     df['date'] = pd.to_datetime(df['time'], unit='s')
     df = df[['date', 'low', 'high', 'open', 'close', 'volume']]
-    df.set_index("date", inplace=True)
+    df.set_index('date', inplace=True)
     df = df.resample(minselect).agg({
         "open": "first",
         "high": "max",
@@ -199,7 +204,7 @@ if option == 'Crypto Charts':
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.write("Using Coinbase Pro's API to populate OHLC data, this chart uses Plotly's Graph Objects library to render the interactive candlestick chart from parsed a Pandas DataFrame.")
+    st.write("Coinbase Pro Currency Data")
 
     st.dataframe(df)
     # st.write(df)
@@ -323,62 +328,6 @@ if option == 'Cryptocurrency Top 100':
         df_change['price_change_pct_30d'].plot(kind='barh',
                                               color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
         with col5: st.pyplot(plt)
-
-# if option == 'Crypto Chart':
-#
-#     nom_url = "https://nomics.com/"
-#     request = rq.get(nom_url)
-#
-#     soup = bs(request.content, 'html.parser')
-#     nom_data = soup.find('script', id="__NEXT_DATA__", type="application/json")
-#     # print(nom_data.prettify())
-#
-#     coins = {}
-#
-#     coin_data = json.loads(nom_data.contents[0])
-#     listings = coin_data['props']['pageProps']['data']['currenciesTicker']
-#
-#     for i in listings:
-#         coins[i['id']] = i['name']
-#
-#     # print(coins)
-#     coin = col1.text_input("Coin", 'ETH', max_chars=5)
-#     print(coin)
-#     nom_url = f"https://nomics.com/assets/{coin}-{coins[coin]}/history"
-#     data = rq.get(nom_url)
-#     print(data)
-#
-#     name = []
-#     symbol = []
-#     date = []
-#     open = []
-#     high = []
-#     low = []
-#     close = []
-#     volume = []
-#
-#     for item in data:
-#
-#         name.append(item['name'])
-#         symbol.append(item['symbol'])
-#         open.append(item['open'])
-#         high.append(float(item['high']))
-#         low.append(float(item['low']))
-#         close.append(item['close'])
-#         volume.append(item['1d']['volume'])
-#
-#     df = pd.DataFrame(columns=['name', 'symbol', 'open', 'high', 'low', 'close', 'volume'])
-#     df['name'] = name
-#     df['symbol'] = symbol
-#     df['open'] = open
-#     df['high'] = high
-#     df['low'] = low
-#     df['close'] = close
-#     df['volume'] = volume
-#
-#     # df.to_csv("cryptos.csv", index=False)
-#
-#     print(df)
 
 
 if option == 'Sort Visualizations':
@@ -766,7 +715,7 @@ if option == 'Blockchain Explorer':
                          'blocksize': block_data['block']['metadata']['size']}
             epoch.append(new_block['epoch'])
             index.append(new_block['index'])
-            timestamp.append(datetime.fromtimestamp((new_block['timestamp'])/1000).strftime('%Y.%m.%d %H:%M:%S'))
+            timestamp.append(dt.fromtimestamp((new_block['timestamp'])/1000).strftime('%Y.%m.%d %H:%M:%S'))
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
 
