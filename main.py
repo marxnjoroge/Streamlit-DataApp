@@ -178,7 +178,7 @@ if option == 'Crypto Charts':
 
     minselect = col1.select_slider("Time Delta", ["2min", "3min", "5min", "15min", "30min", "60min", "240min"])
 
-    dftx = pd.DataFrame(cb_data,
+    df = pd.DataFrame(cb_data,
                         columns=['time', 'low', 'high', 'open', 'close', 'volume'])
     df['date'] = pd.to_datetime(df['time'], unit='s')
     df = df[['date', 'low', 'high', 'open', 'close', 'volume']]
@@ -302,7 +302,7 @@ if option == 'Cryptocurrency Top 100':
 
     col4, col5 = st.columns((2, 1))
     with col4: st.subheader("CryptoWatch: (%) Price Change")
-    period = st.sidebar.selectbox("Time Period", ('1D', '7D', '30D'))
+    period = st.sidebar.selectbox("Time Period", ('1D', '30D'))
 
     frame = load_data()
     with col4: st.dataframe(frame)
@@ -317,7 +317,7 @@ if option == 'Cryptocurrency Top 100':
         with col5: st.subheader("1 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
         # with _lock:
-        plt.figure(figsize=(6, 15))
+        plt.figure(figsize=(6, 18))
         plt.subplots_adjust(top=0.75, bottom=0)
         df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
         with col5: st.pyplot(plt)
