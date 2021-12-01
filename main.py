@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from datetime import datetime as dt,timedelta
 import base64
-# import sqllite3
+import sqlite3
 
 st.set_page_config(layout="wide", page_title="Cryptonomicon")
 padding = 3
@@ -118,6 +118,7 @@ col2, col3 = st.columns((2,1))
 # Sidebar + Main panel
 col1.image("Cryptonomiconredsmallbanner.png")
 col1.header("Web 3.0 Layer X")
+# col1.write("Note: This site is not (yet) mobile friendly.")
 option = col1.selectbox("Tools", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
 col2.image("Cryptonomiconredbanner.png")
@@ -178,8 +179,8 @@ if option == 'Crypto Charts':
 
     minselect = col1.select_slider("Time Delta", ["2min", "3min", "5min", "15min", "30min", "60min", "240min"])
 
-    df = pd.DataFrame(cb_data,
-                      columns=['time', 'low', 'high', 'open', 'close', 'volume'])
+    dftx = pd.DataFrame(cb_data,
+                        columns=['time', 'low', 'high', 'open', 'close', 'volume'])
     df['date'] = pd.to_datetime(df['time'], unit='s')
     df = df[['date', 'low', 'high', 'open', 'close', 'volume']]
     df.set_index('date', inplace=True)
@@ -513,15 +514,10 @@ if option == 'Blockchain Explorer':
 
     if title == "Bitcoin: BTC":
 
-        col2.image("btclogotop.svg")
+        col2.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJEz7ChxRTdUyUh3dXCBb6WaTThx3O6VzKdQ&usqp=CAU")
         col2.subheader("Bitcoin RPC API")
-        st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different 
-                   access methods to each chain's network and data.  The data pulled from the Bitcoin network 
-                   below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")  
-        st.write("""Posted below is the parsed data in a more readable table of 'N' latest blocks, and the raw json for the latest block contents.""")
-                     
-        st.write("""It should be noted that even given a standardized API call method, the parameters for each network
-                    are chain-specific.""")
+        st.write("""Using Getblock's Blockchain Node Provider for access to BTC network and data.""")
+        st.write("""**Note:** Data returned from API calls are chain-specific.""")
 
         btc_status_endpoint = "https://btc.getblock.io/mainnet/"
         headers = {
@@ -553,6 +549,7 @@ if option == 'Blockchain Explorer':
         blockhash = []
         blocksize = []
         nTx = []
+        btc_txs = []
 
         for i in range(0, 10):
             last_block_params = {
@@ -573,29 +570,70 @@ if option == 'Blockchain Explorer':
             blockhash.append(new_block['blockhash'])
             blocksize.append(new_block['blocksize'])
             nTx.append(new_block['nTx'])
+            btc_txs.append(btc_blockdata['result']['tx'][:20])
 
             lastn.append(new_block)
             btc_hash = btc_blockdata['result']['previousblockhash']
 
+        st.write("\nLatest Blocks\n")
         df = pd.DataFrame(columns=['index', 'timestamp (utc)', 'blockhash', 'blocksize', 'no.transactions'])
+
         df['index'] = index
         df['timestamp (utc)'] = time
         df['blockhash'] = blockhash
         df['blocksize'] = blocksize
         df['no.transactions'] = nTx
 
+        df = df.style.hide_index()
         st.dataframe(df)
-        st.json(lastn)
+
+        blocktime = []
+        confirmations = []
+        size = []
+        txid = []
+        value = []
+        hash = []
+
+        for i in range(0, 20):
+            btc_txs_params = {
+                "jsonrpc": "2.0",
+                "method": "getrawtransaction",
+                "params": {
+                    "txid": btc_txs[0][i],
+                    "verbose": True
+                },
+                "id": "getblock.io"
+            }
+
+            btc_txs_data = rq.post(url=btc_status_endpoint, json=btc_txs_params, headers=headers).json()
+            # btc_txs_summary.append(btc_txs_data['result'])
+            blocktime.append(dt.fromtimestamp(btc_txs_data['result']['blocktime']).strftime('%Y.%m.%d %H:%M:%S'))
+            confirmations.append(btc_txs_data['result']['confirmations'])
+            size.append(btc_txs_data['result']['size'])
+            txid.append(btc_txs_data['result']['txid'])
+            value.append(btc_txs_data['result']['vout'][0]['value'])
+            hash.append(btc_txs_data['result']['hash'])
+
+        st.write("\nLatest Transactions\n")
+        dftx = pd.DataFrame(columns=['blocktime', 'confirmations', 'size', 'txid', 'value (BTC)', 'hash'])
+
+        dftx['blocktime'] = blocktime
+        dftx['confirmations'] = confirmations
+        dftx['size'] = size
+        dftx['txid'] = txid
+        dftx['value (BTC)'] = value
+        dftx['hash'] = hash
+
+        dftx = dftx.style.hide_index()
+
+        st.dataframe(dftx)
 
     if title == "Ethereum: ETH":
 
-        col2.image("ethereum-logo-landscape-black.png")
+        col2.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvWkHiF5KiIrH-bQmqr19sodbZCBz3uLRrxQ&usqp=CAU")
         col2.subheader("Ethereum RPC API")
-        st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different access methods to each 
-        chain's network and data.  The data pulled from the Bitcoin network below uses the json/rpc API generalized method for rpc/application 
-        POST API calls to the chain.""")
-        st.write("""Posted below is the parsed data in more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
-        st.write("""The Ehereum blockchain uses it's own RPC API call method, the parameters for each network remaining chain-specific.""")
+        st.write("""Using Getblock's Blockchain Node Provider for access to Ethereum network and data.""")
+        st.write("""**Note:** Data returned from API calls are chain-specific.""")
 
         GETBLOCK_API_URL = "https://eth.getblock.io/mainnet/"
         GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
@@ -621,6 +659,7 @@ if option == 'Blockchain Explorer':
         eth_blockdata = rq.post(url=GETBLOCK_API_URL, json=eth_params, headers=eth_headers).json()
         curr_block_hash = eth_blockdata['result']['hash']
         curr_block_number = eth_blockdata['result']['number']
+        curr_txs_hash = []
 
         for i in range(0, 10):
             hash_eth_params = {
@@ -637,6 +676,8 @@ if option == 'Blockchain Explorer':
                          'gasUsed': hash_eth_blockdata['result']['gasUsed']}
 
             latest_blocks.append(new_block)
+            if i == 0:
+                curr_txs_hash.append(hash_eth_blockdata['result']['transactions'][:20])
             curr_block_hash = hash_eth_blockdata['result']['parentHash']
 
         dec_blocks = []
@@ -660,16 +701,55 @@ if option == 'Blockchain Explorer':
         df['gasLimit'] = gasLimit
         df['gasUsed'] = gasUsed
 
+        st.write("\nLatest Blocks\n")
         st.dataframe(df)
-        st.json(dec_blocks)
+
+        transx_blockid = []
+        trans_idx = []
+        gas = []
+        gas_price = []
+        from_acct = []
+        to_acct = []
+        value = []
+        type = []
+
+        for i in range(0, 20):
+            hash_eth_params = {
+                "id": "txsHash",
+                "jsonrpc": "2.0",
+                "method": "eth_getTransactionByHash",
+                "params": [curr_txs_hash[0][i]]
+            }
+            hash_eth_txdata = rq.post(url=GETBLOCK_API_URL, json=hash_eth_params, headers=eth_headers).json()
+            transx_blockid.append(int(hash_eth_txdata['result']['blockNumber'], 16))
+            trans_idx.append(int(hash_eth_txdata['result']['transactionIndex'], 16))
+            gas.append(int(hash_eth_txdata['result']['gas'], 16))
+            gas_price.append(int(hash_eth_txdata['result']['gasPrice'], 16))
+            from_acct.append(hash_eth_txdata['result']['from'])
+            to_acct.append(hash_eth_txdata['result']['to'])
+            value.append(int(hash_eth_txdata['result']['value'], 16))
+            type.append(int(hash_eth_txdata['result']['type'], 16))
+
+        txdf = pd.DataFrame(
+            columns=['transx_blockid', 'trans_idx', 'gas', 'gas_price', 'from_acct', 'to_acct', 'value (WEI)', 'type'])
+        txdf['transx_blockid'] = transx_blockid
+        txdf['trans_idx'] = trans_idx
+        txdf['gas'] = gas
+        txdf['gas_price'] = gas_price
+        txdf['from_acct'] = from_acct
+        txdf['to_acct'] = to_acct
+        txdf['value'] = value
+        txdf['type'] = type
+
+        st.write("\nLatest Transactions\n")
+        st.dataframe(txdf)
 
     if title == "Cardano: ADA":
 
         col2.image("cardanosizedlogo.svg")
         st.subheader("Cardano [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API.")
-        st.write("""Using Getblock's Blockchain Node Provider as a gateway to various chains presents different
-                   access methods to each chain's network and data.  The data pulled from the Cardano network
-                   below uses the Rosetta API call.""")
+        st.write("""Using Getblock's Blockchain Node Provider for access to the Cardano network and data.""")
+        st.write("""**Note:** Data returned from API calls are chain-specific.""")
 
         ada_status_endpoint = "https://ada.getblock.io/mainnet/network/status"
         GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
@@ -739,14 +819,9 @@ if option == 'Blockchain Explorer':
     if title == "Binance Smart Chain: BNB":
 
         col2.image("330px-Binance_logo.svg.png")
-        col2.subheader(f"{title}: Ethereum RPC API")
-        st.write(f"Using Getblock's Blockchain Node Provider as a gateway to various chains presents different access methods to each \
-        chain's network and data.  The data pulled from the {title} network below uses the json/rpc API generalized method for rpc/application \
-        POST API calls to the chain.")
-        st.write(
-            """Posted below is the parsed data in more readable table of 'N' latest blocks and the raw json for the latest block contents.""")
-        st.write(
-            f"The {title} blockchain uses Ethereum RPC API call methods, the parameters for each network remaining chain-specific.")
+        col2.subheader(f"Binance Smart Chain (BNB): Ethereum RPC API")
+        st.write("""Using Getblock's Blockchain Node Provider for access to Binance Smart Chain network and data.""")
+        st.write("""**Note:** Data returned from API calls are chain-specific.""")
 
         GETBLOCK_API_URL = "https://bsc.getblock.io/mainnet/"
         GETBLOCK_API_KEY = st.secrets["GETBLOCK_API_KEY"]
@@ -776,6 +851,7 @@ if option == 'Blockchain Explorer':
         num_bsc_blockdata = rq.post(url=GETBLOCK_API_URL, json=num_bsc_params, headers=bsc_headers).json()
 
         curr_block_hash = num_bsc_blockdata['result']['hash']
+        curr_txs_hash = []
         # print(curr_block_hash)
 
         for i in range(0, 10):
@@ -797,6 +873,8 @@ if option == 'Blockchain Explorer':
                          'miner': hash_bsc_blockdata['result']['miner']}
 
             latest_blocks.append(new_block)
+            if i == 0:
+                curr_txs_hash.append(hash_bsc_blockdata['result']['transactions'][:20])
             curr_block_hash = hash_bsc_blockdata['result']['parentHash']
 
         dec_blocks = []
@@ -826,20 +904,46 @@ if option == 'Blockchain Explorer':
         df['miner'] = miner
 
         st.dataframe(df)
-        st.json(dec_blocks)
+        # st.json(dec_blocks)
+
+        transx_blockid = []
+        trans_idx = []
+        gas = []
+        gas_price = []
+        from_acct = []
+        to_acct = []
+        value = []
+        type = []
+
+        for i in curr_txs_hash[0]:
+            transx_blockid.append(int(i['blockNumber'], 16))
+            trans_idx.append(int(i['transactionIndex'], 16))
+            gas.append(int(i['gas'], 16))
+            gas_price.append(int(i['gasPrice'], 16))
+            from_acct.append(i['from'])
+            to_acct.append(i['to'])
+            value.append(int(i['value'], 16))
+            type.append(int(i['type'], 16))
+
+        txdf = pd.DataFrame(
+            columns=['transx_blockid', 'trans_idx', 'gas', 'gas_price', 'from_acct', 'to_acct', 'value (WEI)', 'type'])
+        txdf['transx_blockid'] = transx_blockid
+        txdf['trans_idx'] = trans_idx
+        txdf['gas'] = gas
+        txdf['gas_price'] = gas_price
+        txdf['from_acct'] = from_acct
+        txdf['to_acct'] = to_acct
+        txdf['value (WEI)'] = value
+        txdf['type'] = type
+
+        st.dataframe(txdf)
 
     if title == "Ripple: XRP":
 
         col2.subheader("XRP Ledger API")
         st.image("ripplesmallimage.png")
-        st.write("""Ripple provides it's own gateways to the XRP chains, which present APIs to their unique syntax on their own
-        proprietary network and protocolsto provide access to each chain's network and data.  The data pulled from the Ripple network 
-        below uses the json/rpc API generalized method for HTTPD POST style API calls to the chain.""")
-        st.write(
-            """Posted below is the parsed data in a more readable table of 'N' latest blocks, and the raw json for the latest block contents.""")
-
-        st.write("""It should be noted that even given a standardized API call method, the parameters for each network
-                            are chain-specific.""")
+        st.write("""Accessing XRP Ledger throuoh Ripple gateway nodes and APIs to the XRP chains,their proprietary network, protocols and each chain's data.""")
+        st.write("""**Note:** Data returned from API calls are chain-specific.""")
 
         XRP_API_URL = "https://s1.ripple.com:51234/"
         xrp_headers = {
@@ -855,7 +959,7 @@ if option == 'Blockchain Explorer':
         latest_blocks = []
         latest_tx = []
 
-        init_ledger_hash = "validated"
+        init_ledger_hash = "current"
         METHOD = "ledger_closed"
 
         for i in range(0, 1):
