@@ -10,9 +10,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from datetime import datetime as dt,timedelta
 import base64
-import sqlite3
 
-st.set_page_config(layout="wide", page_title="Cryptonomicon")
+st.set_page_config(layout="wide", page_title="Cryptonomics")
 padding = 3
 st.markdown(f""" <style>    
     .reportview-container .main .block-container{{
@@ -116,17 +115,17 @@ col2, col3 = st.columns((2,1))
 
 # ------------------------------- #
 # Sidebar + Main panel
-col1.image("Cryptonomiconredsmallbanner.png")
+col1.image("Cryptonomicsgoldbannersmall.png")
 col1.header("Web 3.0 Layer X")
 # col1.write("Note: This site is not (yet) mobile friendly.")
-option = col1.selectbox("Tools", ('Cryptonomicom', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
+option = col1.selectbox("Tools", ('Cryptonomics', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
-col2.image("Cryptonomiconredbanner.png")
+col2.image("Cryptonomicsgoldbanner.png")
 
-if option == 'Cryptonomicom':
+if option == 'Cryptonomics':
 
-    st.subheader("November 27, 2021")
-    st.write("Crypto Watchlist: 16+ | Stock Watchlist: TSLA")
+    st.subheader("Crypto Watchlist: 19+ | Stock Watchlist: TSLA - Black Friday VIX.")
+    st.write("November 27, 2021")
     st.image("TVBlackFridayVix.png")
     st.write("I checked my watchlist today and realized that the only stock chart I have looked at in the last 6 months was Tesla.  As economies adjust to shifts in central Bank, fiscal, currency and trade policy, the emergent cyptocurrency markets increasingly appear to mimic corelative moves in the VIX in sentiment and direction.  As the value of Cryptocurreny networks compound over time, the logic of investing in entire ecosystems, like an index of sorts, appeals contrasted against investing in the very top heavy organizational value of an individual company.  The exception to this is Tesla, which is both a top heavy company and also one that behaves like a network.  I've updated my waatchlist to reflect these changes in strategy. - Nov, 27, 2021 @Nairobi, Kenya")
 
@@ -147,7 +146,7 @@ if option == 'Crypto Charts':
     * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
     * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
      streamlit tips and tricks.
-    * ** Authored by:** Marx Njoroge, ©2021. [Resume] [Sounds of Before]
+    * ** Authored by:** Marx Njoroge, ©2021. 
     * ** Immesurable thanks to [Neal Stephenson] (https://www.nealstephenson.com/). 
      """)
     with col1:
@@ -303,7 +302,7 @@ if option == 'Cryptocurrency Top 100':
 
     col4, col5 = st.columns((2, 1))
     with col4: st.subheader("CryptoWatch: (%) Price Change")
-    period = st.sidebar.selectbox("Time Period", ('1D', '30D'))
+    period = st.sidebar.selectbox("Time Period", ('1D', '7D', '30D'))
 
     frame = load_data()
     with col4: st.dataframe(frame)
@@ -318,7 +317,7 @@ if option == 'Cryptocurrency Top 100':
         with col5: st.subheader("1 Day (%) Price Change")
         df_change = df_change.sort_values(by=['price_change_pct_1d'])
         # with _lock:
-        plt.figure(figsize=(6, 20))
+        plt.figure(figsize=(6, 15))
         plt.subplots_adjust(top=0.75, bottom=0)
         df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
         with col5: st.pyplot(plt)
@@ -777,7 +776,7 @@ if option == 'Blockchain Explorer':
         blockhash = []
         blocksize = []
 
-        for i in range(0, 10):
+        for i in range(0, 20):
             ada_block_endpoint = "https://ada.getblock.io/mainnet/block"
             block_params = {
                 "network_identifier": {
@@ -814,7 +813,7 @@ if option == 'Blockchain Explorer':
         df['blocksize'] = blocksize
 
         st.dataframe(df)
-        st.json(latest_blocks)
+        #st.json(latest_blocks)
 
     if title == "Binance Smart Chain: BNB":
 
