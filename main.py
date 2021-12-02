@@ -124,10 +124,19 @@ col2.image("Cryptonomicsgoldbanner.png")
 
 if option == 'Cryptonomics':
 
-    st.subheader("Crypto Watchlist: 19+ | Stock Watchlist: TSLA - Black Friday VIX.")
-    st.write("November 27, 2021")
-    st.image("TVBlackFridayVix.png")
-    st.write("I checked my watchlist today and realized that the only stock chart I have looked at in the last 6 months was Tesla.  As economies adjust to shifts in central Bank, fiscal, currency and trade policy, the emergent cyptocurrency markets increasingly appear to mimic corelative moves in the VIX in sentiment and direction.  As the value of Cryptocurreny networks compound over time, the logic of investing in entire ecosystems, like an index of sorts, appeals contrasted against investing in the very top heavy organizational value of an individual company.  The exception to this is Tesla, which is both a top heavy company and also one that behaves like a network.  I've updated my waatchlist to reflect these changes in strategy. - Nov, 27, 2021 @Nairobi, Kenya")
+    st.subheader("The Shift: Black Friday VIX - 11.27.2021\n")
+
+    def theTweet(tweet_url):
+        tweet_api = "https://publish.twitter.com/oembed?url={}".format(tweet_url)
+        response = rq.get(tweet_api)
+        data = response.json()['html']
+
+        return data
+
+
+    res = theTweet("https://twitter.com/cryptonomican")
+    # st.write(res)
+    components.html(res, height=800)
 
 if option == 'Crypto Charts':
 
