@@ -134,7 +134,7 @@ if option == 'Cryptonomics':
         return data
 
 
-    res = theTweet("https://twitter.com/cryptonomican")
+    res = theTweet("https://twitter.com/cryptonomicus")
     # st.write(res)
     components.html(res, height=800, width=600, scrolling=True)
 
