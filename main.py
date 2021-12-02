@@ -136,7 +136,7 @@ if option == 'Cryptonomics':
 
     res = theTweet("https://twitter.com/cryptonomican")
     # st.write(res)
-    components.html(res, height=800)
+    components.html(res, height=800, scrolling=True)
 
 if option == 'Crypto Charts':
 
