@@ -116,16 +116,18 @@ col2, col3 = st.columns((2,1))
 # ------------------------------- #
 # Sidebar + Main panel
 col1.image("Cryptonomicsgoldbannersmall.png")
-col1.header("Web 3.0 Layer X")
+col1.header("Web 3.0 Layer X \n(Press 'r' or 'R' to refresh)")
 # col1.write("Note: This site is not (yet) mobile friendly.")
 option = col1.selectbox("Tools", ('Cryptonomics', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
 col2.image("Cryptonomicsgoldbanner.png")
 
 if option == 'Cryptonomics':
-
-    st.subheader("The Shift: Black Friday VIX - 11.27.2021\n")
-
+    st.header("What is Value?")
+    st.subheader("The Shift: Black Friday [VIX] (https://www.dummies.com/personal-finance/investing/investing-strategies/using-volatility-to-measure-fear/#:~:text=VIX%20stands%20for%20volatility%20index,used%20as%20a%20sentiment%20indicator.&text=A%20declining%20VIX%20reflects%20neutral,the%20market%20as%20a%20whole.)- 11.27.2021\n")
+    # def standard(stndardUrl):
+    #     std_url = stndardUrl
+    #     std_api =
     def theTweet(tweet_url):
         tweet_api = "https://publish.twitter.com/oembed?url={}".format(tweet_url)
         response = rq.get(tweet_api)
