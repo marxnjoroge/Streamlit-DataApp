@@ -162,7 +162,7 @@ if option == 'Crypto Charts':
     * ** Immesurable thanks to [Neal Stephenson] (https://www.nealstephenson.com/). 
      """) 
     with col1:
-        sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
+        sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH_USD", max_chars=None).upper()
 
     col2.title("Crypto Coin Data")
 
