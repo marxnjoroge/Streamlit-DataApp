@@ -188,7 +188,7 @@ if option == 'Crypto Charts':
     st.subheader(f"{sym.upper()}: ${cb_data[0][4]} | {dt.fromtimestamp(cb_data[0][0]).strftime('%Y.%m.%d %H:%M:%S')}")
     padding = 2
 
-    minselect = col1.select_slider("Time Delta", ["2min", "3min", "5min", "15min", "30min", "60min", "240min"])
+    minselect = col1.select_slider("Time Delta", ["ONE_MINUTE", "FIVE_MINUTE", "FIFTEEN_MINUTET", "THIRTY_MINUTE", "ONE_HOUR", "TWO_HOUR", "SIX_HOUR", "ONE_DAY"])
 
     df = pd.DataFrame(cb_data,
                         columns=['time', 'low', 'high', 'open', 'close', 'volume'])
