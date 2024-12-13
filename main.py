@@ -1,5 +1,5 @@
 import streamlit as st
-from coinpaprika import client as Coinpaprika
+# from coinpaprika import client as Coinpaprika
 from bs4 import  BeautifulSoup as bs
 import pandas as pd
 import requests as rq
