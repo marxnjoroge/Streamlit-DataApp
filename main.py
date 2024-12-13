@@ -128,12 +128,12 @@ if option == 'Cryptonomics':
     # def standard(stndardUrl):
     #     std_url = stndardUrl
     #     std_api =
-    """ def theTweet(tweet_url):
-        tweet_api = "https://publish.twitter.com/oembed?url={}".format(tweet_url)
-        response = rq.get(tweet_api)
-        data = response.json()['html']
+    # def theTweet(tweet_url):
+    #    tweet_api = "https://publish.twitter.com/oembed?url={}".format(tweet_url)
+    #    response = rq.get(tweet_api)
+    #    data = response.json()['html']
 
-        return data """
+    #    return data """
 
 
     # res = theTweet("https://twitter.com/cryptonomicus")
@@ -153,7 +153,7 @@ if option == 'Crypto Charts':
     expand.markdown("""
     * **Python Libraries:** streamlit, streamlit.components, pandas, requests, 
     matplotlib, matplotlib.animation, time, random, json, plotly.
-    * ** Data sources:** [Getblock.io] (https://getblock.io), [Coinbase Pro] (https://pro.cloud.coinbase.com), [Yahoo Finance] (https://yahoo.com/finance).
+    * ** Data sources:** [Coinpaprika] (https://coinpaprika.com), [Getblock.io] (https://getblock.io), [Coinbase Pro] (https://pro.cloud.coinbase.com), [Yahoo Finance] (https://yahoo.com/finance).
     * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
     * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
      streamlit tips and tricks.
@@ -163,9 +163,9 @@ if option == 'Crypto Charts':
     with col1:
         sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
 
-    col2.title("Crypto Data & Stuff")
+    col2.title("Crypto Coin Data")
 
-    cb_api_url = "https://api.pro.coinbase.com"
+    cb_api_url = "https://cdp.coinbase.com"
     bar_size = 3600
     timeend = dt.now()
     delta = timedelta(hours=1)
