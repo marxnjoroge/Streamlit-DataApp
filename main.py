@@ -1,4 +1,5 @@
 import streamlit as st
+from coinpaprika import client as Coinpaprika
 from bs4 import  BeautifulSoup as bs
 import pandas as pd
 import requests as rq
@@ -116,29 +117,28 @@ col2, col3 = st.columns((2,1))
 # ------------------------------- #
 # Sidebar + Main panel
 col1.image("Cryptonomicsgoldbannersmall.png")
-col1.header("Web 3.0 Layer X \n(Press 'r' or 'R' to refresh)")
-# col1.write("Note: This site is not (yet) mobile friendly.")
+col1.header("Python Projects \n(Press 'r' or 'R' to refresh)")
 option = col1.selectbox("Tools", ('Cryptonomics', 'Cryptocurrency Top 100', 'Crypto Charts', 'Blockchain Explorer', 'Sort Visualizations'))
 
 col2.image("Cryptonomicsgoldbanner.png")
 
 if option == 'Cryptonomics':
-    st.header("What is Value?")
+    st.header("Python Projects")
     st.subheader("The Shift: Black Friday [VIX] (https://www.dummies.com/personal-finance/investing/investing-strategies/using-volatility-to-measure-fear/#:~:text=VIX%20stands%20for%20volatility%20index,used%20as%20a%20sentiment%20indicator.&text=A%20declining%20VIX%20reflects%20neutral,the%20market%20as%20a%20whole.)- 11.27.2021\n")
     # def standard(stndardUrl):
     #     std_url = stndardUrl
     #     std_api =
-    def theTweet(tweet_url):
+    """ def theTweet(tweet_url):
         tweet_api = "https://publish.twitter.com/oembed?url={}".format(tweet_url)
         response = rq.get(tweet_api)
         data = response.json()['html']
 
-        return data
+        return data """
 
 
-    res = theTweet("https://twitter.com/cryptonomicus")
+    # res = theTweet("https://twitter.com/cryptonomicus")
     # st.write(res)
-    components.html(res, height=800, width=600, scrolling=True)
+    # components.html(res, height=800, width=600, scrolling=True)
 
 if option == 'Crypto Charts':
 
@@ -153,13 +153,13 @@ if option == 'Crypto Charts':
     expand.markdown("""
     * **Python Libraries:** streamlit, streamlit.components, pandas, requests, 
     matplotlib, matplotlib.animation, time, random, json, plotly.
-    * ** Data sources:** [Nomics.com] (https://nomics.com), [Getblock.io] (https://getblock.io), [Coinbase Pro] (https://pro.cloud.coinbase.com), [Yahoo Finance] (https://yahoo.com/finance).
+    * ** Data sources:** [Getblock.io] (https://getblock.io), [Coinbase Pro] (https://pro.cloud.coinbase.com), [Yahoo Finance] (https://yahoo.com/finance).
     * ** APIs:** rpc/application, [Rosetta] (https://www.rosetta-api.org/docs/BlockApi.html) API, [XRP Ledger API] (https://xrpl.org/).
     * ** Layout:** Thanks to [Data Professor] (https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q0) for 
      streamlit tips and tricks.
-    * ** Authored by:** Marx Njoroge, ©2021. 
+    * ** Authored by:** Marx Njoroge, ©2024. 
     * ** Immesurable thanks to [Neal Stephenson] (https://www.nealstephenson.com/). 
-     """)
+     """) 
     with col1:
         sym = st.text_input("Enter Currency Pair Symbol (Coinbase Listings):", "ETH-USD", max_chars=None).upper()
 
