@@ -1,4 +1,5 @@
 import streamlit as st
+import http.client
 # from coinpaprika import client as Coinpaprika
 from bs4 import  BeautifulSoup as bs
 import pandas as pd
@@ -165,7 +166,7 @@ if option == 'Crypto Charts':
 
     col2.title("Crypto Coin Data")
 
-    cb_api_url = "https://cdp.coinbase.com"
+    cb_api_url = "https://api.coinbase.com"
     bar_size = 3600
     timeend = dt.now()
     delta = timedelta(hours=1)
@@ -179,9 +180,9 @@ if option == 'Crypto Charts':
         "end": timeend,
         "granularity": bar_size,
     }
-    cb_headers = {"Accept": "application/json"}
+    cb_headers = {"Content-Type": "application/json"}
 
-    cb_data = rq.get(f"{cb_api_url}/products/{sym}/candles",
+    cb_data = rq.get(f"{cb_api_url}/api/v3/brokerage/market/products/{sym}/candles",
                      json=params,
                      headers=cb_headers).json()
     st.subheader(f"{sym.upper()}: ${cb_data[0][4]} | {dt.fromtimestamp(cb_data[0][0]).strftime('%Y.%m.%d %H:%M:%S')}")
