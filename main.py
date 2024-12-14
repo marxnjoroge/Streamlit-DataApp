@@ -186,7 +186,6 @@ if option == 'Crypto Charts':
                      json=params,
                      headers=cb_headers).json()
     st.subheader(f"{sym}: ${cb_data[0][4]} | {dt.fromtimestamp(cb_data[0][0]).strftime('%Y.%m.%d %H:%M:%S')}")
-    padding = 2
 
     minselect = col1.select_slider("Time Delta", ["ONE_MINUTE", "FIVE_MINUTE", "FIFTEEN_MINUTET", "THIRTY_MINUTE", "ONE_HOUR", "TWO_HOUR", "SIX_HOUR", "ONE_DAY"])
 
