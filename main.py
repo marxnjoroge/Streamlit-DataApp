@@ -343,67 +343,67 @@ if option == 'Cryptonomics':
 #         with col5: st.pyplot(plt)
 
 
-# if option == 'Sort Visualizations':
-#     col2.header(option)
-#     title = st.sidebar.radio(label="Sort Algorithms", options=["Merge", "Quick", "Bubble"])
+if option == 'Sort Visualizations':
+    col2.header(option)
+    title = st.sidebar.radio(label="Sort Algorithms", options=["Merge", "Quick", "Bubble"])
 
-#     if title == 'Merge':
+    if title == 'Merge':
 
-#         col2.subheader(title)
+        col2.subheader(title)
 
-#         st.write("This visualization is written in Python using Matplotlib "
-#                  "to both visualize and animate the Sort Algorithm.  A Streamlit "
-#                  "component is then used to dynamically convert the Matplotlib animation "
-#                  "to javascript in order to render it to html.")
-#         st.write("**Note:** sorting more values takes longer to render.")
+        st.write("This visualization is written in Python using Matplotlib "
+                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
+                 "component is then used to dynamically convert the Matplotlib animation "
+                 "to javascript in order to render it to html.")
+        st.write("**Note:** sorting more values takes longer to render.")
 
         
-#         with col1:
-#             n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
-#         alg = 2
-#         cache = n * 10
-#         title = "Merge Sort"
-#         array = [i + 1 for i in range(n)]
-#         random.shuffle(array)
-#         algo = mergeSort(array)
+        with col1:
+            n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
+        alg = 2
+        cache = n * 10
+        title = "Merge Sort"
+        array = [i + 1 for i in range(n)]
+        random.shuffle(array)
+        algo = mergeSort(array)
 
-#         # Initialize fig
-#         plt.rcParams["figure.figsize"] = (7, 4)
-#         plt.rcParams["font.size"] = 8
-#         # with _lock:
-#         fig, ax = plt.subplots()
-#         ax.set_title(title)
+        # Initialize fig
+        plt.rcParams["figure.figsize"] = (7, 4)
+        plt.rcParams["font.size"] = 8
+        # with _lock:
+        fig, ax = plt.subplots()
+        ax.set_title(title)
 
-#         bar_rec = ax.bar(range(len(array)), array, align='edge')
+        bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-#         ax.set_xlim(0, n)
-#         ax.set_ylim(0, int(n * 1.06))
+        ax.set_xlim(0, n)
+        ax.set_ylim(0, int(n * 1.06))
 
-#         text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-#         epochs = [0]
-
-
-#         def init():
-#             ax.bar(range(len(array)), array, align='edge')
-
-#         # @st.cache
-#         def update_plot(array, rect, epochs):
-#             for rect, val in zip(rect, array):
-#                 rect.set_height(val)
-#                 rect.set_color("#cc00cc")
-#             text.set_text("No. of operations: {}".format(epochs[0]))
-#             epochs[0] += 1
-
-#             return bar_rec,
+        epochs = [0]
 
 
-#         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-#                                        repeat=False)
-#         # plt.show()
-#         # st.pyplot(plt)
+        def init():
+            ax.bar(range(len(array)), array, align='edge')
 
-#         components.html(anima.to_jshtml(), height=1000)
+        # @st.cache
+        def update_plot(array, rect, epochs):
+            for rect, val in zip(rect, array):
+                rect.set_height(val)
+                rect.set_color("#cc00cc")
+            text.set_text("No. of operations: {}".format(epochs[0]))
+            epochs[0] += 1
+
+            return bar_rec,
+
+
+        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+                                       repeat=False)
+        # plt.show()
+        # st.pyplot(plt)
+
+        components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Quick':
         st.subheader(title)
