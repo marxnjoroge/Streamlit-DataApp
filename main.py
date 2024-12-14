@@ -228,182 +228,182 @@ if option == 'Cryptonomics':
 #     # st.line_chart(tickerDf.Close)
 #     # st.image(f"https://finviz.com/chart.ashx?t={symbol}")
 
-if option == 'Cryptocurrency Top 100':
+# if option == 'Cryptocurrency Top 100':
 
-    with st.container():
-        st.header(option)
-        st.subheader("Python Web Scraping + API + Pandas + Matplotlib")
-        st.write("It's fun when a project becomes daily useful. What began as a web scraping exercise evolved into an at-a-glance "
-                   "cryptocurrency price change chart.  Web scraping is used to provide the top 100 currency list, which is then fed back to "
-                   "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
-                   "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
-                   "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
-        st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
+#     with st.container():
+#         st.header(option)
+#         st.subheader("Python Web Scraping + API + Pandas + Matplotlib")
+#         st.write("It's fun when a project becomes daily useful. What began as a web scraping exercise evolved into an at-a-glance "
+#                    "cryptocurrency price change chart.  Web scraping is used to provide the top 100 currency list, which is then fed back to "
+#                    "the Nomic API to retrieve spot price data and organized into a Pandas DataFrame for the neatly presented tabular data as it "
+#                    "appears in both the terminal and in the Webified Streamlit App page.  Finally Matplotlib provides a handy way to visualize the "
+#                    "tabular data in a convenient bar chart that has become a valuable reference for Crypto performance across currencies.")
+#         st.write("This tool has become a 'go to' screen and plans are to extend this page as the basis for a more expansive dashboard")
     
-    # @st.cache
-    def load_data():
+#     # @st.cache
+#     def load_data():
 
-        nom_url = "https://nomics.com/"
-        nom_api_url = "https://api.nomics.com/v1/currencies/ticker"
+#         nom_url = "https://nomics.com/"
+#         nom_api_url = "https://api.nomics.com/v1/currencies/ticker"
 
-        request = rq.get(nom_url)
+#         request = rq.get(nom_url)
 
-        soup = bs(request.content, 'html.parser')
-        nom_data = soup.find('script', id="__NEXT_DATA__", type="application/json")
-        # print(nom_data.prettify())
+#         soup = bs(request.content, 'html.parser')
+#         nom_data = soup.find('script', id="__NEXT_DATA__", type="application/json")
+#         # print(nom_data.prettify())
 
-        coins = []
+#         coins = []
 
-        coin_data = json.loads(nom_data.contents[0])
-        listings = coin_data['props']['pageProps']['data']['currenciesTicker']
-        for i in listings:
-            coins.append(i['id'])
+#         coin_data = json.loads(nom_data.contents[0])
+#         listings = coin_data['props']['pageProps']['data']['currenciesTicker']
+#         for i in listings:
+#             coins.append(i['id'])
 
-        coin = ','.join(coins)
+#         coin = ','.join(coins)
         
-        # st.write("DB username:", st.secrets["db_username"])        
-        NOM_API_KEY = st.secrets["NOM_API_KEY"]
-        nom_headers = {
-            "key": "NOM_API_KEY"
-        }
-        nom_params = {
-            "ids": coin,
-            "interval": "1d,30d",
-            "convert": "USD"
-        }
-        url = f"https://api.nomics.com/v1/currencies/ticker?key={NOM_API_KEY}&ids={coin}&interval=1d,30d&convert=USD"
-        data = rq.post(url=url).json()
+#         # st.write("DB username:", st.secrets["db_username"])        
+#         NOM_API_KEY = st.secrets["NOM_API_KEY"]
+#         nom_headers = {
+#             "key": "NOM_API_KEY"
+#         }
+#         nom_params = {
+#             "ids": coin,
+#             "interval": "1d,30d",
+#             "convert": "USD"
+#         }
+#         url = f"https://api.nomics.com/v1/currencies/ticker?key={NOM_API_KEY}&ids={coin}&interval=1d,30d&convert=USD"
+#         data = rq.post(url=url).json()
 
-        # print(data[0])
+#         # print(data[0])
 
-        market_cap = []
-        volume = []
-        price = []
-        price_change_pct_1d = []
-        price_change_pct_30d = []
-        price_timestamp = []
-        name = []
-        symbol = []
+#         market_cap = []
+#         volume = []
+#         price = []
+#         price_change_pct_1d = []
+#         price_change_pct_30d = []
+#         price_timestamp = []
+#         name = []
+#         symbol = []
 
-        for item in data:
-            market_cap.append(int(item['market_cap']))
-            volume.append(item['1d']['volume'])
-            price.append(item['price'])
-            price_change_pct_1d.append(float(item['1d']['price_change_pct']))
-            price_change_pct_30d.append(float(item['30d']['price_change_pct']))
-            price_timestamp.append(item['price_timestamp'])
-            name.append(item['name'])
-            symbol.append(item['symbol'])
+#         for item in data:
+#             market_cap.append(int(item['market_cap']))
+#             volume.append(item['1d']['volume'])
+#             price.append(item['price'])
+#             price_change_pct_1d.append(float(item['1d']['price_change_pct']))
+#             price_change_pct_30d.append(float(item['30d']['price_change_pct']))
+#             price_timestamp.append(item['price_timestamp'])
+#             name.append(item['name'])
+#             symbol.append(item['symbol'])
 
-        df = pd.DataFrame(columns=['name', 'symbol', 'price', 'price_change_pct_1d', 'price_timestamp', 'volume', 'marketcap'])
-        df['marketcap'] = market_cap
-        df['volume'] = volume
-        df['price'] = price
-        df['price_change_pct_1d'] = price_change_pct_1d
-        df['price_change_pct_30d'] = price_change_pct_30d
-        df['price_timestamp'] = price_timestamp
-        df['name'] = name
-        df['symbol'] = symbol
+#         df = pd.DataFrame(columns=['name', 'symbol', 'price', 'price_change_pct_1d', 'price_timestamp', 'volume', 'marketcap'])
+#         df['marketcap'] = market_cap
+#         df['volume'] = volume
+#         df['price'] = price
+#         df['price_change_pct_1d'] = price_change_pct_1d
+#         df['price_change_pct_30d'] = price_change_pct_30d
+#         df['price_timestamp'] = price_timestamp
+#         df['name'] = name
+#         df['symbol'] = symbol
 
-        # df.to_csv("cryptos.csv", index=False)
-        print(name)
+#         # df.to_csv("cryptos.csv", index=False)
+#         print(name)
 
-        return df
-
-
-    col4, col5 = st.columns((2, 1))
-    with col4: st.subheader("CryptoWatch: (%) Price Change")
-    period = st.sidebar.selectbox("Time Period", ('1D', '30D'))
-
-    frame = load_data()
-    with col4: st.dataframe(frame)
-
-    df_change = pd.concat([frame.symbol, frame.price_change_pct_1d, frame.price_change_pct_30d], axis=1)
-    df_change = df_change.set_index('symbol')
-    df_change['positive_price_change_pct_1d'] = df_change['price_change_pct_1d'] > 0
-    df_change['positive_price_change_pct_30d'] = df_change['price_change_pct_30d'] > 0
-    with col4: st.dataframe(df_change)
-
-    if period == '1D':
-        with col5: st.subheader("1 Day (%) Price Change")
-        df_change = df_change.sort_values(by=['price_change_pct_1d'])
-        # with _lock:
-        plt.figure(figsize=(6, 18))
-        plt.subplots_adjust(top=0.75, bottom=0)
-        df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
-        with col5: st.pyplot(plt)
-
-    elif period == '30D':
-        with col5: st.subheader("30 Day (%) Price Change")
-        df_change = df_change.sort_values(by=['price_change_pct_30d'])
-        plt.figure(figsize=(6, 20))
-        plt.subplots_adjust(top=.75, bottom=0)
-        df_change['price_change_pct_30d'].plot(kind='barh',
-                                              color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
-        with col5: st.pyplot(plt)
+#         return df
 
 
-if option == 'Sort Visualizations':
-    col2.header(option)
-    title = st.sidebar.radio(label="Sort Algorithms", options=["Merge", "Quick", "Bubble"])
+#     col4, col5 = st.columns((2, 1))
+#     with col4: st.subheader("CryptoWatch: (%) Price Change")
+#     period = st.sidebar.selectbox("Time Period", ('1D', '30D'))
 
-    if title == 'Merge':
+#     frame = load_data()
+#     with col4: st.dataframe(frame)
 
-        col2.subheader(title)
+#     df_change = pd.concat([frame.symbol, frame.price_change_pct_1d, frame.price_change_pct_30d], axis=1)
+#     df_change = df_change.set_index('symbol')
+#     df_change['positive_price_change_pct_1d'] = df_change['price_change_pct_1d'] > 0
+#     df_change['positive_price_change_pct_30d'] = df_change['price_change_pct_30d'] > 0
+#     with col4: st.dataframe(df_change)
 
-        st.write("This visualization is written in Python using Matplotlib "
-                 "to both visualize and animate the Sort Algorithm.  A Streamlit "
-                 "component is then used to dynamically convert the Matplotlib animation "
-                 "to javascript in order to render it to html.")
-        st.write("**Note:** sorting more values takes longer to render.")
+#     if period == '1D':
+#         with col5: st.subheader("1 Day (%) Price Change")
+#         df_change = df_change.sort_values(by=['price_change_pct_1d'])
+#         # with _lock:
+#         plt.figure(figsize=(6, 18))
+#         plt.subplots_adjust(top=0.75, bottom=0)
+#         df_change['price_change_pct_1d'].plot(kind='barh', color=df_change.positive_price_change_pct_1d.map({True: 'purple', False: 'gray'}))
+#         with col5: st.pyplot(plt)
+
+#     elif period == '30D':
+#         with col5: st.subheader("30 Day (%) Price Change")
+#         df_change = df_change.sort_values(by=['price_change_pct_30d'])
+#         plt.figure(figsize=(6, 20))
+#         plt.subplots_adjust(top=.75, bottom=0)
+#         df_change['price_change_pct_30d'].plot(kind='barh',
+#                                               color=df_change.positive_price_change_pct_30d.map({True: 'purple', False: 'gray'}))
+#         with col5: st.pyplot(plt)
+
+
+# if option == 'Sort Visualizations':
+#     col2.header(option)
+#     title = st.sidebar.radio(label="Sort Algorithms", options=["Merge", "Quick", "Bubble"])
+
+#     if title == 'Merge':
+
+#         col2.subheader(title)
+
+#         st.write("This visualization is written in Python using Matplotlib "
+#                  "to both visualize and animate the Sort Algorithm.  A Streamlit "
+#                  "component is then used to dynamically convert the Matplotlib animation "
+#                  "to javascript in order to render it to html.")
+#         st.write("**Note:** sorting more values takes longer to render.")
 
         
-        with col1:
-            n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
-        alg = 2
-        cache = n * 10
-        title = "Merge Sort"
-        array = [i + 1 for i in range(n)]
-        random.shuffle(array)
-        algo = mergeSort(array)
+#         with col1:
+#             n = st.slider(label="No. of Array Values", min_value=15, max_value=50)
+#         alg = 2
+#         cache = n * 10
+#         title = "Merge Sort"
+#         array = [i + 1 for i in range(n)]
+#         random.shuffle(array)
+#         algo = mergeSort(array)
 
-        # Initialize fig
-        plt.rcParams["figure.figsize"] = (7, 4)
-        plt.rcParams["font.size"] = 8
-        # with _lock:
-        fig, ax = plt.subplots()
-        ax.set_title(title)
+#         # Initialize fig
+#         plt.rcParams["figure.figsize"] = (7, 4)
+#         plt.rcParams["font.size"] = 8
+#         # with _lock:
+#         fig, ax = plt.subplots()
+#         ax.set_title(title)
 
-        bar_rec = ax.bar(range(len(array)), array, align='edge')
+#         bar_rec = ax.bar(range(len(array)), array, align='edge')
 
-        ax.set_xlim(0, n)
-        ax.set_ylim(0, int(n * 1.06))
+#         ax.set_xlim(0, n)
+#         ax.set_ylim(0, int(n * 1.06))
 
-        text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
+#         text = ax.text(0.02, 0.95, "0", transform=ax.transAxes)
 
-        epochs = [0]
-
-
-        def init():
-            ax.bar(range(len(array)), array, align='edge')
-
-        # @st.cache
-        def update_plot(array, rect, epochs):
-            for rect, val in zip(rect, array):
-                rect.set_height(val)
-                rect.set_color("#cc00cc")
-            text.set_text("No. of operations: {}".format(epochs[0]))
-            epochs[0] += 1
-
-            return bar_rec,
+#         epochs = [0]
 
 
-        anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
-                                       repeat=False)
-        # plt.show()
-        # st.pyplot(plt)
+#         def init():
+#             ax.bar(range(len(array)), array, align='edge')
 
-        components.html(anima.to_jshtml(), height=1000)
+#         # @st.cache
+#         def update_plot(array, rect, epochs):
+#             for rect, val in zip(rect, array):
+#                 rect.set_height(val)
+#                 rect.set_color("#cc00cc")
+#             text.set_text("No. of operations: {}".format(epochs[0]))
+#             epochs[0] += 1
+
+#             return bar_rec,
+
+
+#         anima = anim.FuncAnimation(fig, update_plot, fargs=(bar_rec, epochs), frames=algo, save_count=cache, interval=20,
+#                                        repeat=False)
+#         # plt.show()
+#         # st.pyplot(plt)
+
+#         components.html(anima.to_jshtml(), height=1000)
 
     if title == 'Quick':
         st.subheader(title)
